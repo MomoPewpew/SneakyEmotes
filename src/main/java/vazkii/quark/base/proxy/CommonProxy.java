@@ -20,11 +20,14 @@ import vazkii.quark.base.client.ContributorRewardHandler;
 import vazkii.quark.base.command.CommandConfig;
 import vazkii.quark.base.module.GlobalConfig;
 import vazkii.quark.base.module.ModuleLoader;
+import vazkii.quark.base.network.MessageRegister;
 
 public class CommonProxy {
 
 	public void preInit(FMLPreInitializationEvent event) {
 		ModuleLoader.preInit(event);
+
+		MessageRegister.init();
 	}
 
 	public void init(FMLInitializationEvent event) {
