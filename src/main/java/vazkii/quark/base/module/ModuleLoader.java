@@ -26,20 +26,9 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import vazkii.quark.api.module.ModuleLoadedEvent;
-import vazkii.quark.automation.QuarkAutomation;
 import vazkii.quark.base.Quark;
-import vazkii.quark.base.handler.RecipeProcessor;
 import vazkii.quark.base.lib.LibMisc;
-import vazkii.quark.building.QuarkBuilding;
-import vazkii.quark.client.QuarkClient;
-import vazkii.quark.decoration.QuarkDecoration;
-import vazkii.quark.experimental.QuarkExperimental;
-import vazkii.quark.management.QuarkManagement;
-import vazkii.quark.misc.QuarkMisc;
-import vazkii.quark.oddities.QuarkOddities;
-import vazkii.quark.tweaks.QuarkTweaks;
 import vazkii.quark.vanity.QuarkVanity;
-import vazkii.quark.world.QuarkWorld;
 
 import java.io.File;
 import java.lang.management.ManagementFactory;
@@ -50,9 +39,9 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 public final class ModuleLoader {
-	
+
 	// Checks if the Java Debug Wire Protocol is enabled
-	public static final boolean DEBUG_MODE = ManagementFactory.getRuntimeMXBean().getInputArguments().toString().contains("-agentlib:jdwp"); 
+	public static final boolean DEBUG_MODE = ManagementFactory.getRuntimeMXBean().getInputArguments().toString().contains("-agentlib:jdwp");
 
 	private static List<Class<? extends Module>> moduleClasses;
 	public static final Map<Class<? extends Module>, Module> moduleInstances = new HashMap<>();
@@ -69,22 +58,10 @@ public final class ModuleLoader {
 	private static void setupModuleClasses() {
 		moduleClasses = new ArrayList<>();
 
-		registerModule(QuarkTweaks.class);
-		registerModule(QuarkWorld.class);
 		registerModule(QuarkVanity.class);
-		registerModule(QuarkDecoration.class);
-		registerModule(QuarkBuilding.class);
-		registerModule(QuarkAutomation.class);
-		registerModule(QuarkManagement.class);
-		registerModule(QuarkClient.class);
-		registerModule(QuarkMisc.class);
 
-		if(Loader.isModLoaded("quarkoddities"))
-			registerModule(QuarkOddities.class);
-		
-		registerModule(QuarkExperimental.class);
 	}
-	
+
 	public static void preInit(FMLPreInitializationEvent event) {
 		setupModuleClasses();
 		moduleClasses.forEach(clazz -> {
@@ -103,10 +80,8 @@ public final class ModuleLoader {
 
 		forEachEnabled(module -> module.preInit(event));
 		forEachEnabled(Module::postPreInit);
-		
-		RecipeProcessor.runConsumers();
 	}
-	
+
 	public static void init(FMLInitializationEvent event) {
 		forEachEnabled(Module::init);
 	}
@@ -118,7 +93,7 @@ public final class ModuleLoader {
 	public static void finalInit(FMLPostInitializationEvent event) {
 		forEachEnabled(Module::finalInit);
 	}
-	
+
 	@SideOnly(Side.CLIENT)
 	public static void preInitClient(FMLPreInitializationEvent event) {
 		forEachEnabled(Module::preInitClient);
@@ -142,13 +117,13 @@ public final class ModuleLoader {
 		configFile = event.getSuggestedConfigurationFile();
 		if(!configFile.exists())
 			firstLoad = true;
-		
+
 		config = new Configuration(configFile);
 		config.load();
-		
+
 		loadConfig();
 	}
-	
+
 	public static void loadConfig() {
 		GlobalConfig.initGlobalConfig();
 
@@ -166,7 +141,7 @@ public final class ModuleLoader {
 		enabledModules.removeIf(module -> !module.enabled);
 
 		loadModuleConfigs();
-		
+
 		if(config.hasChanged())
 			config.save();
 	}
@@ -174,7 +149,7 @@ public final class ModuleLoader {
 	private static void loadModuleConfigs() {
 		forEachModule(Module::setupConfig);
 	}
-	
+
 	public static boolean isModuleEnabled(Class<? extends Module> clazz) {
 		Module module = moduleInstances.get(clazz);
 		return module != null && module.enabled;
@@ -206,7 +181,7 @@ public final class ModuleLoader {
 			if(eventArgs.getModID().equals(LibMisc.MOD_ID))
 				loadConfig();
 		}
-		
+
 		@SubscribeEvent(priority = EventPriority.LOWEST)
 		public static void onRegistered(RegistryEvent.Register<Item> event) {
 			lazyOreDictRegisters.forEach(Runnable::run);

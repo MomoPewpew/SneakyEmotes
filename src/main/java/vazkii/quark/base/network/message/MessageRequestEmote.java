@@ -25,13 +25,13 @@ import java.nio.charset.StandardCharsets;
 public class MessageRequestEmote extends NetworkMessage<MessageRequestEmote> {
 
 	public String emoteName;
-	
+
 	public MessageRequestEmote(String emoteName) {
 		this.emoteName = emoteName;
 	}
-	
+
 	public MessageRequestEmote() { }
-	
+
 	@Override
 	public IMessage handleMessage(MessageContext context) {
 		EntityPlayerMP player = context.getServerHandler().player;
@@ -55,20 +55,20 @@ public class MessageRequestEmote extends NetworkMessage<MessageRequestEmote> {
 					}
 			}
 		});
-		
+
 		return null;
 	}
-	
+
 	private static class EmoteCommandSender implements ICommandSender {
-		
+
 		public final MinecraftServer server;
 		public final ICommandSender superSender;
-		
+
 		public EmoteCommandSender(MinecraftServer server, ICommandSender superSender) {
 			this.server = server;
 			this.superSender = superSender;
 		}
-	
+
 		@Override
 		public MinecraftServer getServer() {
 			return server;
@@ -90,29 +90,29 @@ public class MessageRequestEmote extends NetworkMessage<MessageRequestEmote> {
 		public boolean canUseCommand(int permLevel, @Nonnull String commandName) {
 			return !commandName.equals("emote") && permLevel <= 2;
 		}
-		
+
 		@Nonnull
 		@Override
 		public BlockPos getPosition() {
 			return superSender.getPosition();
 		}
-		
+
 		@Nonnull
 		@Override
 		public Vec3d getPositionVector() {
 			return superSender.getPositionVector();
 		}
-		
+
 		@Override
 		public Entity getCommandSenderEntity() {
 			return superSender.getCommandSenderEntity();
 		}
-		
+
 		@Override
 		public boolean sendCommandFeedback() {
 			return EmoteSystem.customEmoteDebug && getEntityWorld().getGameRules().getBoolean("commandBlockOutput");
 		}
 
 	}
-	
+
 }

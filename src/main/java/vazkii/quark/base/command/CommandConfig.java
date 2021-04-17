@@ -2,10 +2,10 @@
  * This class was created by <Vazkii>. It's distributed as
  * part of the Quark Mod. Get the Source Code in github:
  * https://github.com/Vazkii/Quark
- * 
+ *
  * Quark is Open Source and distributed under the
  * CC-BY-NC-SA 3.0 License: https://creativecommons.org/licenses/by-nc-sa/3.0/deed.en_GB
- * 
+ *
  * File Created @ [15/07/2016, 05:22:28 (GMT)]
  */
 package vazkii.quark.base.command;
@@ -69,7 +69,7 @@ public class CommandConfig extends CommandBase {
 			}
 		}
 	}
-	
+
 	@Nonnull
 	@Override
 	public String getName() {
@@ -90,14 +90,14 @@ public class CommandConfig extends CommandBase {
 
 	@Override
 	public int getRequiredPermissionLevel() {
-		return 2;	
+		return 2;
 	}
 
 	@Override
 	public void execute(@Nonnull MinecraftServer server, @Nonnull ICommandSender sender, @Nonnull String[] args) throws CommandException {
 		if(args.length < 3)
 			 throw new WrongUsageException(getUsage(sender));
-		
+
 		boolean save = args.length >= 5 && args[4].equals("save");
 
 		String category = args[0];

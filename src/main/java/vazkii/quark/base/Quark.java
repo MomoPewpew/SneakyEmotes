@@ -66,7 +66,7 @@ public class Quark {
 	public void postInitClient(FMLPostInitializationEvent event) {
 		ClientCommandHandler.instance.registerCommand(new EmoteCommand());
 	}
-	
+
 	@EventHandler
 	public void serverStarting(FMLServerStartingEvent event) {
 		proxy.serverStarting(event);

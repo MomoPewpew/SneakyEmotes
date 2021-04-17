@@ -10,7 +10,7 @@ import vazkii.quark.base.module.ModuleLoader;
 
 @SideOnly(Side.CLIENT)
 public class TemplateSourcedEmote extends EmoteBase {
-	
+
 	public TemplateSourcedEmote(EmoteDescriptor desc, EntityPlayer player, ModelBiped model, ModelBiped armorModel, ModelBiped armorLegsModel) {
 		super(desc, player, model, armorModel, armorLegsModel);
 
@@ -19,7 +19,7 @@ public class TemplateSourcedEmote extends EmoteBase {
 			desc.template.readAndMakeTimeline(desc, player, model);
 		}
 	}
-	
+
 	boolean shouldLoadTimelineOnLaunch() {
 		return ModuleLoader.DEBUG_MODE;
 	}

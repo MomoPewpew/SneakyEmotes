@@ -35,19 +35,19 @@ import java.util.List;
 public class Feature implements IFeature {
 
 	public Module module;
-	
+
 	public boolean loadtimeDone;
 	public boolean enabledAtLoadtime;
-	
+
 	public boolean enabledByDefault;
 	public boolean enabled;
 	public boolean prevEnabled;
 	public String configCategory;
 	public String configName;
 	public Property prop;
-	
+
 	public boolean forceLoad;
-	
+
 	public final void setupConstantConfig() {
 		String[] incompat = getIncompatibleMods();
 		if(incompat != null && incompat.length > 0) {
@@ -55,12 +55,12 @@ public class Feature implements IFeature {
 			for(String s : incompat)
 				desc.append(" - ").append(s).append("\n");
 			desc.append("This is done to prevent content overlap.\nYou can turn this on to force the feature to be loaded even if the above mods are also loaded.");
-				
+
 			ConfigHelper.needsRestart = true;
 			forceLoad = loadPropBool("Force Enabled", desc.toString(), false);
 		}
 	}
-	
+
 	public void setupConfig() {
 		// NO-OP
 	}
@@ -68,15 +68,15 @@ public class Feature implements IFeature {
 	public void onEnabled() {
 		// NO-OP
 	}
-	
+
 	public void onDisabled() {
 		// NO-OP
 	}
-	
+
 	public void preInit(FMLPreInitializationEvent event) {
 		// NO-OP
 	}
-	
+
 	public void postPreInit() {
 		// NO-OP
 	}
@@ -88,7 +88,7 @@ public class Feature implements IFeature {
 	public void postInit() {
 		// NO-OP
 	}
-	
+
 	public void finalInit() {
 		// NO-OP
 	}
@@ -112,7 +112,7 @@ public class Feature implements IFeature {
 	public void serverStarting() {
 		// NO-OP
 	}
-	
+
 	public String[] getIncompatibleMods() {
 		return null;
 	}
@@ -132,11 +132,11 @@ public class Feature implements IFeature {
 	public String getFeatureDescription() {
 		return "";
 	}
-	
+
 	public String getFeatureIngameConfigName() {
 		return WordUtils.capitalizeFully(configName);
 	}
-	
+
 	public boolean requiresMinecraftRestartToEnable() {
 		return false;
 	}
@@ -144,15 +144,15 @@ public class Feature implements IFeature {
 	public static void registerTile(Class<? extends TileEntity> clazz, String key) {
 		GameRegistry.registerTileEntity(clazz, new ResourceLocation(LibMisc.MOD_ID, key));
 	}
-	
+
 	public static void addOreDict(String key, Item value) {
 		addOreDict(key, ProxyRegistry.newStack(value));
 	}
-	
+
 	public static void addOreDict(String key, Block value) {
 		addOreDict(key, ProxyRegistry.newStack(value));
 	}
-	
+
 	public static void addOreDict(String key, ItemStack value) {
 		ModuleLoader.lazyOreDictRegisters.add(() -> OreDictionary.registerOre(key, value));
 	}
