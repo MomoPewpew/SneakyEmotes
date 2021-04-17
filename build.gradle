@@ -1,0 +1,191 @@
+buildscript {
+    repositories {
+        jcenter()
+        maven {
+            name = "forge"
+            url = "http://files.minecraftforge.net/maven"
+        }
+    }
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+    }
+}
+
+apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'maven-publish'
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
+ext.configFile = file('build.properties')
+
+ext.config = parseConfig(configFile)
+
+version = "${config.version}-${config.build_number}"
+group = "vazkii.quark" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = config.mod_name
+
+if (System.getenv().BUILD_NUMBER != null) {
+    version += ".${System.getenv().BUILD_NUMBER}"
+}
+
+repositories {
+    maven {
+        // for AutoRegLib
+        name "blamejared"
+        url "http://maven.blamejared.com/"
+    }
+    maven {
+        // for JEI
+        name = "promwml16"
+        url "http://dvs1.progwml6.com/files/maven"
+    }
+}
+
+dependencies {
+    deobfCompile "vazkii.autoreglib:AutoRegLib:${config.arl_version}"
+    deobfCompile "mezz.jei:jei_${config.mc_version}:${config.jei_version}"
+}
+
+minecraft {
+    version = "${config.mc_version}-${config.forge_version}"
+    runDir = "eclipse/assets"
+
+    coreMod = "vazkii.quark.base.asm.LoadingPlugin"
+
+    mappings = config.mc_mappings
+    replace 'GRADLE:BUILD', config.build_number
+    replace 'GRADLE:VERSION', config.version
+    replace '" + DEV_ENV_HACK + "', ''
+
+    // Scala: not even once
+    replace 'scala.actors.threadpool.Arrays', 'java.util.Arrays'
+
+    makeObfSourceJar = false
+}
+
+jar {
+    exclude "**/*.bat"
+    exclude "**/*.psd"
+    exclude "**/*.exe"
+    exclude "**/unused"
+
+    manifest {
+        attributes(
+                "FMLCorePluginContainsFMLMod": "true",
+                "FMLCorePlugin": "vazkii.quark.base.asm.LoadingPlugin",
+                "FMLAT": "quark_at.cfg"
+        )
+    }
+
+}
+
+processResources {
+    // replace stuff in mcmod.info, nothing else
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+
+        // replace version and mcversion
+        expand 'version': project.version, 'mcversion': config.mc_version
+    }
+
+    // copy everything else, thats not the mcmod.info
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info', '**/psd/**'
+    }
+
+    rename '(.+_at.cfg)', 'META-INF/$1'
+}
+
+task deobfJar(type: Jar) {
+    from(sourceSets.main.output)
+    archiveName = "${baseName}-${version}-deobf.${extension}"
+}
+
+task srcJar(type: Jar) {
+    from(sourceSets.main.java)
+    classifier = 'sources'
+    archiveName = "${baseName}-${version}-sources.${extension}"
+}
+
+task apiJar(type: Jar) {
+    // Remove sources from the api jar when MinecraftForge/ForgeGradle#369 is fixed
+    from(sourceSets.main.allJava)
+    from(sourceSets.main.output)
+    include 'vazkii/quark/api/**'
+
+    classifier = 'api'
+    archiveName = "${baseName}-${version}-api.${extension}"
+}
+
+artifacts {
+    archives srcJar, apiJar
+}
+/**
+ * Increments the buildnumber in your config file, and saves it
+ */
+task incrementBuildNumber {
+    doFirst {
+        config.build_number = (config.build_number.toString().toInteger()) + 1
+        configFile.withWriter {
+            config.toProperties().store(it, "")
+        }
+    }
+}
+
+import java.util.regex.Pattern
+
+task sortArtifacts(type: Copy) {
+    from jar.destinationDir
+    into config.dir_output
+    //Put each jar with a classifier in a subfolder with the classifier as its name
+    eachFile {
+        //This matcher is used to get the classifier of the jar
+        def matcher = Pattern.compile(Pattern.quote("$config.mod_name-$version") + "-(?<classifier>\\w+)\\.jar").matcher(it.name)
+        //Only change the destination for full matches, i.e jars with classifiers
+        if (matcher.matches())
+        {
+            def classifier = matcher.group('classifier')
+            /* Set the relative path to change the destination, since 
+             * Gradle doesn't seem to like the absolute path being set*/
+            it.relativePath = it.relativePath.parent.append(false, classifier, it.name)
+        }
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            groupId project.group
+            artifactId project.archivesBaseName
+            version project.version
+            from components.java
+
+            artifact apiJar
+            artifact srcJar
+
+            pom.withXml {
+                if (asNode().get("dependencies").size() > 0) {
+                    // Deobf deps are a bit broken on gradle 4.8+ with maven-publish, let's not put them there
+                    asNode().remove(asNode().get("dependencies"))
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            url "file://" + System.getenv("local_maven")
+        }
+    }
+}
+
+def parseConfig(File config) {
+    config.withReader {
+        def prop = new Properties()
+        prop.load(it)
+        return (new ConfigSlurper().parse(prop))
+    }
+}
+
+
+defaultTasks 'clean', 'build', 'sortArtifacts', 'incrementBuildNumber'
