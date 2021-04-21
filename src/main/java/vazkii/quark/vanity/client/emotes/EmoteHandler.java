@@ -44,17 +44,17 @@ public final class EmoteHandler {
 
 	public static final String CUSTOM_EMOTE_NAMESPACE = "quark_custom";
 	public static final String CUSTOM_PREFIX = "custom:";
-	
+
 	public static final Map<String, EmoteDescriptor> emoteMap = new LinkedHashMap<>();
 	private static final Map<String, EmoteBase> playerEmotes = new HashMap<>();
 
 	private static int count;
-	
+
 	public static void addEmote(String name, Class<? extends EmoteBase> clazz) {
 		EmoteDescriptor desc = new EmoteDescriptor(clazz, name, name, count++);
 		emoteMap.put(name, desc);
 	}
-	
+
 	public static void addEmote(String name) {
 		addEmote(name, TemplateSourcedEmote.class);
 	}
@@ -64,13 +64,13 @@ public final class EmoteHandler {
 		EmoteDescriptor desc = new CustomEmoteDescriptor(name, reg, count++);
 		emoteMap.put(reg, desc);
 	}
-	
+
 	public static void putEmote(AbstractClientPlayer player, String emoteName, int tier) {
 		if(emoteMap.containsKey(emoteName)) {
 			putEmote(player, emoteMap.get(emoteName), tier);
 		}
 	}
-	
+
 	public static void putEmote(AbstractClientPlayer player, EmoteDescriptor desc, int tier) {
 		String name = player.getName();
 		if(desc == null)
@@ -95,15 +95,15 @@ public final class EmoteHandler {
 		if(e instanceof AbstractClientPlayer) {
 			AbstractClientPlayer player = (AbstractClientPlayer) e;
 			String name = player.getName();
-			
+
 			resetPlayer(player);
-			
+
 			if(playerEmotes.containsKey(name)) {
 				EmoteBase emote = playerEmotes.get(name);
 				boolean done = emote.isDone();
 
 				if(!done)
-					emote.update();
+					emote.update(e);
 			}
 		}
 	}
@@ -122,16 +122,16 @@ public final class EmoteHandler {
 			GlStateManager.popMatrix();
 		}
 	}
-	
+
 	public static void onRenderTick(Minecraft mc) {
 		World world = mc.world;
 		if(world == null)
 			return;
-		
+
 		for(EntityPlayer player : world.playerEntities)
 			updatePlayerStatus(player);
 	}
-	
+
 	private static void updatePlayerStatus(EntityPlayer e) {
 		if(e instanceof AbstractClientPlayer) {
 			AbstractClientPlayer player = (AbstractClientPlayer) e;
@@ -143,7 +143,7 @@ public final class EmoteHandler {
 				if(done) {
 					playerEmotes.remove(name);
 					resetPlayer(player);
-					
+
 					Minecraft mc = Minecraft.getMinecraft();
 					if(mc.inGameHasFocus && EmoteSystem.isEnableKeybinds()) {
 						for(KeyBinding key : ModKeybinds.emoteKeys.keySet())
@@ -154,11 +154,11 @@ public final class EmoteHandler {
 								}
 							}
 				} else
-					emote.update();
+					emote.update((Entity) e);
 			} else resetPlayer(player);
 		}
 	}
-	
+
 	public static EmoteBase getPlayerEmote(EntityPlayer player) {
 		return playerEmotes.get(player.getName());
 	}
@@ -173,7 +173,7 @@ public final class EmoteHandler {
 		RenderPlayer render = getRenderPlayer(player);
 		if(render != null)
 			return render.getMainModel();
-		
+
 		return null;
 	}
 
@@ -181,7 +181,7 @@ public final class EmoteHandler {
 		RenderPlayer render = getRenderPlayer(player);
 		if(render == null)
 			return null;
-		
+
 		List list = ObfuscationReflectionHelper.getPrivateValue(RenderLivingBase.class, render, LibObfuscation.LAYER_RENDERERS);
 		for (Object aList : list)
 			if (aList instanceof LayerBipedArmor)
@@ -194,15 +194,15 @@ public final class EmoteHandler {
 		RenderPlayer render = getRenderPlayer(player);
 		if(render == null)
 			return null;
-		
+
 		List list = ObfuscationReflectionHelper.getPrivateValue(RenderLivingBase.class, render, LibObfuscation.LAYER_RENDERERS);
 		for (Object aList : list)
 			if (aList instanceof LayerBipedArmor)
 				return ObfuscationReflectionHelper.getPrivateValue(LayerArmorBase.class, (LayerArmorBase) aList, LibObfuscation.MODEL_LEGGINGS);
-		
+
 		return null;
 	}
-	
+
 	private static void resetPlayer(AbstractClientPlayer player) {
 		resetModel(getPlayerModel(player));
 		resetModel(getPlayerArmorModel(player));
@@ -231,7 +231,7 @@ public final class EmoteHandler {
 			ModelAccessor.INSTANCE.resetModel(model);
 		}
 	}
-	
+
 	private static void resetPart(ModelRenderer part) {
 		if(part != null)
 			part.rotateAngleZ = part.offsetX = part.offsetY = part.offsetZ = 0F;

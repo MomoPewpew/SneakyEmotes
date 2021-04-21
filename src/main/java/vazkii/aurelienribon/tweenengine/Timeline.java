@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import net.minecraft.entity.Entity;
+
 /**
  * A Timeline can be used to create complex animations made of sequences and
  * parallel sets of Tweens.
@@ -279,18 +281,18 @@ public final class Timeline extends BaseTween<Timeline> {
 	}
 
 	@Override
-	protected void updateOverride(int step, int lastStep, boolean isIterationStep, float delta) {
+	protected void updateOverride(int step, int lastStep, boolean isIterationStep, float delta, Entity entity) {
 		if (!isIterationStep && step > lastStep) {
 			assert delta >= 0;
 			float dt = isReverse(lastStep) ? -delta-1 : delta+1;
-			for (BaseTween<?> aChildren : children) aChildren.update(dt);
+			for (BaseTween<?> aChildren : children) aChildren.update(dt, entity);
 			return;
 		}
 
 		if (!isIterationStep && step < lastStep) {
 			assert delta <= 0;
 			float dt = isReverse(lastStep) ? -delta-1 : delta+1;
-			for (int i=children.size()-1; i>=0; i--) children.get(i).update(dt);
+			for (int i=children.size()-1; i>=0; i--) children.get(i).update(dt, entity);
 			return;
 		}
 
@@ -298,26 +300,26 @@ public final class Timeline extends BaseTween<Timeline> {
 
 		if (step > lastStep) {
 			if (isReverse(step)) {
-				forceEndValues();
-				for (BaseTween<?> aChildren : children) aChildren.update(delta);
+				forceEndValues(entity);
+				for (BaseTween<?> aChildren : children) aChildren.update(delta, entity);
 			} else {
-				forceStartValues();
-				for (BaseTween<?> aChildren : children) aChildren.update(delta);
+				forceStartValues(entity);
+				for (BaseTween<?> aChildren : children) aChildren.update(delta, entity);
 			}
 
 		} else if (step < lastStep) {
 			if (isReverse(step)) {
-				forceStartValues();
-				for (int i=children.size()-1; i>=0; i--) children.get(i).update(delta);
+				forceStartValues(entity);
+				for (int i=children.size()-1; i>=0; i--) children.get(i).update(delta, entity);
 			} else {
-				forceEndValues();
-				for (int i=children.size()-1; i>=0; i--) children.get(i).update(delta);
+				forceEndValues(entity);
+				for (int i=children.size()-1; i>=0; i--) children.get(i).update(delta, entity);
 			}
 
 		} else {
 			float dt = isReverse(step) ? -delta : delta;
-			if (delta >= 0) for (BaseTween<?> aChildren : children) aChildren.update(dt);
-			else for (int i=children.size()-1; i>=0; i--) children.get(i).update(dt);
+			if (delta >= 0) for (BaseTween<?> aChildren : children) aChildren.update(dt, entity);
+			else for (int i=children.size()-1; i>=0; i--) children.get(i).update(dt, entity);
 		}
 	}
 
@@ -326,17 +328,17 @@ public final class Timeline extends BaseTween<Timeline> {
 	// -------------------------------------------------------------------------
 
 	@Override
-	protected void forceStartValues() {
+	protected void forceStartValues(Entity entity) {
 		for (int i=children.size()-1; i>=0; i--) {
 			BaseTween<?> obj = children.get(i);
-			obj.forceToStart();
+			obj.forceToStart(entity);
 		}
 	}
 
 	@Override
-	protected void forceEndValues() {
+	protected void forceEndValues(Entity entity) {
 		for (BaseTween<?> obj : children) {
-			obj.forceToEnd(duration);
+			obj.forceToEnd(duration, entity);
 		}
 	}
 

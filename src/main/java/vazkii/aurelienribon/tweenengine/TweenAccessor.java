@@ -1,5 +1,7 @@
 package vazkii.aurelienribon.tweenengine;
 
+import net.minecraft.entity.Entity;
+
 /**
  * The TweenAccessor interface lets you interpolate any attribute from any
  * object. Just implement it as you want and register it to the engine by
@@ -78,5 +80,5 @@ public interface TweenAccessor<T> {
 	 * @param tweenType An integer representing the tween type.
 	 * @param newValues The new values determined by the Tween Engine.
 	 */
-	void setValues(T target, int tweenType, float[] newValues);
+	void setValues(T target, int tweenType, float[] newValues, Entity entity);
 }

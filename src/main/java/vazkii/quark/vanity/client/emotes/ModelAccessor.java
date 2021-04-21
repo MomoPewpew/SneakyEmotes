@@ -13,8 +13,11 @@ package vazkii.quark.vanity.client.emotes;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.entity.Entity;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import noppes.mpm.client.model.ModelBipedAlt;
 import vazkii.aurelienribon.tweenengine.TweenAccessor;
 
 import java.util.Map;
@@ -31,11 +34,11 @@ public class ModelAccessor implements TweenAccessor<ModelBiped> {
 	private static final int OFF_X = 3;
 	private static final int OFF_Y = 4;
 	private static final int OFF_Z = 5;
-	
+
 	protected static final int MODEL_PROPS = 6;
 	protected static final int BODY_PARTS = 7;
 	protected static final int STATE_COUNT = MODEL_PROPS * BODY_PARTS;
-	
+
 	public static final int HEAD = 0;
 	public static final int BODY = MODEL_PROPS;
 	public static final int RIGHT_ARM = 2 * MODEL_PROPS;
@@ -66,7 +69,7 @@ public class ModelAccessor implements TweenAccessor<ModelBiped> {
 	public static final int MODEL_X = MODEL + ROT_X;
 	public static final int MODEL_Y = MODEL + ROT_Y;
 	public static final int MODEL_Z = MODEL + ROT_Z;
-	
+
 	public static final int HEAD_OFF_X = HEAD + OFF_X;
 	public static final int HEAD_OFF_Y = HEAD + OFF_Y;
 	public static final int HEAD_OFF_Z = HEAD + OFF_Z;
@@ -151,7 +154,7 @@ public class ModelAccessor implements TweenAccessor<ModelBiped> {
 	}
 
 	@Override
-	public void setValues(ModelBiped target, int tweenType, float[] newValues) {
+	public void setValues(ModelBiped target, int tweenType, float[] newValues, Entity entity) {
 		int axis = tweenType % MODEL_PROPS;
 		int bodyPart = tweenType - axis;
 
@@ -166,30 +169,30 @@ public class ModelAccessor implements TweenAccessor<ModelBiped> {
 		}
 
 		ModelRenderer model = getBodyPart(target, bodyPart);
-		messWithModel(target, model, axis, newValues[0]);
+		messWithModel(target, model, axis, newValues[0], bodyPart, entity);
 	}
 
-	private void messWithModel(ModelBiped biped, ModelRenderer part, int axis, float val) {
-		setPartAxis(part, axis, val);
-		
+	private void messWithModel(ModelBiped biped, ModelRenderer part, int axis, float val, int bodyPart, Entity entity) {
+		setPartAxis(part, axis, val, bodyPart, entity);
+
 		if(biped instanceof ModelPlayer)
-			messWithPlayerModel((ModelPlayer) biped, part, axis, val);
+			messWithPlayerModel((ModelPlayer) biped, part, axis, val, bodyPart, entity);
 	}
 
-	private void messWithPlayerModel(ModelPlayer biped, ModelRenderer part, int axis, float val) {
+	private void messWithPlayerModel(ModelPlayer biped, ModelRenderer part, int axis, float val, int bodyPart, Entity entity) {
 		if(part == biped.bipedHead) {
-			setPartAxis(biped.bipedHeadwear, axis, val);
+			setPartAxis(biped.bipedHeadwear, axis, val, bodyPart, entity);
 			setPartOffset(getEarsModel(biped), axis, val);
 		} else if(part == biped.bipedLeftArm)
-			setPartAxis(biped.bipedLeftArmwear, axis, val);
+			setPartAxis(biped.bipedLeftArmwear, axis, val, bodyPart, entity);
 		else if(part == biped.bipedRightArm)
-			setPartAxis(biped.bipedRightArmwear, axis, val);
+			setPartAxis(biped.bipedRightArmwear, axis, val, bodyPart, entity);
 		else if(part == biped.bipedLeftLeg)
-			setPartAxis(biped.bipedLeftLegwear, axis, val);
+			setPartAxis(biped.bipedLeftLegwear, axis, val, bodyPart, entity);
 		else if(part == biped.bipedRightLeg)
-			setPartAxis(biped.bipedRightLegwear, axis, val);
+			setPartAxis(biped.bipedRightLegwear, axis, val, bodyPart, entity);
 		else if(part == biped.bipedBody)
-			setPartAxis(biped.bipedBodyWear, axis, val);
+			setPartAxis(biped.bipedBodyWear, axis, val, bodyPart, entity);
 	}
 
 	private void setPartOffset(ModelRenderer part, int axis, float val) {
@@ -206,23 +209,117 @@ public class ModelAccessor implements TweenAccessor<ModelBiped> {
 		}
 	}
 
-	private void setPartAxis(ModelRenderer part, int axis, float val) {
+	private void setPartAxis(ModelRenderer part, int axis, float val, int bodyPart, Entity entity) {
 		if(part == null)
 			return;
-		
-		switch(axis) {
-			case ROT_X:
-				part.rotateAngleX = val; break;
-			case ROT_Y:
-				part.rotateAngleY = val; break;
-			case ROT_Z:
-				part.rotateAngleZ = val; break;
-			case OFF_X:
-				part.offsetX = val; break;
-			case OFF_Y:
-				part.offsetY = val; break;
-			case OFF_Z:
-				part.offsetZ = val; break;
+
+		switch(bodyPart) {
+			case HEAD : {
+					switch(axis) {
+					case ROT_X:
+						part.rotateAngleX = val; break;
+					case ROT_Y:
+						part.rotateAngleY = val; break;
+					case ROT_Z:
+						part.rotateAngleZ = val; break;
+					case OFF_X:
+						part.offsetX = val; break;
+					case OFF_Y:
+						part.offsetY = val; break;
+					case OFF_Z:
+						part.offsetZ = val; break;
+				}
+			}; break; case BODY : {
+				switch(axis) {
+					case ROT_X:
+						part.rotateAngleX = val; break;
+					case ROT_Y:
+						part.rotateAngleY = val; break;
+					case ROT_Z:
+						part.rotateAngleZ = val; break;
+					case OFF_X:
+						part.offsetX = (val * ModelBipedAlt.getPartConfigScale(entity, bodyPart, OFF_Y)); break;
+					case OFF_Y:
+						part.offsetY = (val * ModelBipedAlt.getPartConfigScale(entity, bodyPart, OFF_Y)); break;
+					case OFF_Z:
+						part.offsetZ = (val * ModelBipedAlt.getPartConfigScale(entity, bodyPart, OFF_Y)); break;
+				}
+			}; break; case RIGHT_ARM : {
+				switch(axis) {
+					case ROT_X:
+						part.rotateAngleX = val; break;
+					case ROT_Y:
+						part.rotateAngleY = val; break;
+					case ROT_Z:
+						part.rotateAngleZ = val; break;
+					case OFF_X:
+						part.offsetX = val; break;
+					case OFF_Y:
+						part.offsetY = val; break;
+					case OFF_Z:
+						part.offsetZ = val; break;
+				}
+			}; break; case LEFT_ARM : {
+				switch(axis) {
+					case ROT_X:
+						part.rotateAngleX = val; break;
+					case ROT_Y:
+						part.rotateAngleY = val; break;
+					case ROT_Z:
+						part.rotateAngleZ = val; break;
+					case OFF_X:
+						part.offsetX = val; break;
+					case OFF_Y:
+						part.offsetY = val; break;
+					case OFF_Z:
+						part.offsetZ = val; break;
+				}
+			}; break; case RIGHT_LEG : {
+				switch(axis) {
+					case ROT_X:
+						part.rotateAngleX = val; break;
+					case ROT_Y:
+						part.rotateAngleY = val; break;
+					case ROT_Z:
+						part.rotateAngleZ = val; break;
+					case OFF_X:
+						part.offsetX = val; break;
+					case OFF_Y:
+						part.offsetY = val; break;
+					case OFF_Z:
+						part.offsetZ = val; break;
+				}
+			}; break; case LEFT_LEG : {
+					switch(axis) {
+					case ROT_X:
+						part.rotateAngleX = val; break;
+					case ROT_Y:
+						part.rotateAngleY = val; break;
+					case ROT_Z:
+						part.rotateAngleZ = val; break;
+					case OFF_X:
+						part.offsetX = val; break;
+					case OFF_Y:
+						part.offsetY = val; break;
+					case OFF_Z:
+						part.offsetZ = val; break;
+				}
+			}; break; default : {
+				switch(axis) {
+					case ROT_X:
+						part.rotateAngleX = val; break;
+					case ROT_Y:
+						part.rotateAngleY = val; break;
+					case ROT_Z:
+						part.rotateAngleZ = val; break;
+					case OFF_X:
+						part.offsetX = val; break;
+					case OFF_Y:
+						part.offsetY = val; break;
+					case OFF_Z:
+						part.offsetZ = val; break;
+				}
+			}
 		}
 	}
 

@@ -11,6 +11,7 @@
 package vazkii.quark.vanity.client.emotes;
 
 import net.minecraft.client.model.ModelBiped;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -30,7 +31,7 @@ public abstract class EmoteBase {
 	private final ModelBiped armorLegsModel;
 	private final EmoteState state;
 	private final EntityPlayer player;
-	
+
 	public float timeDone, totalTime, animatedTime;
 	private long lastMs;
 
@@ -43,7 +44,7 @@ public abstract class EmoteBase {
 		this.armorLegsModel = armorLegsModel;
 		this.player = player;
 	}
-	
+
 	public void startAllTimelines() {
 		startTimeline(player, model);
 		startTimeline(player, armorModel);
@@ -64,21 +65,21 @@ public abstract class EmoteBase {
 		state.rotateAndOffset(player);
 	}
 
-	public void update() {
-		state.load(model);
-		state.load(armorModel);
-		state.load(armorLegsModel);
-		
+	public void update(Entity entity) {
+		state.load(model, entity);
+		state.load(armorModel, entity);
+		state.load(armorLegsModel, entity);
+
 		long currTime = System.currentTimeMillis();
 		long timeDiff = currTime - lastMs;
 		animatedTime += timeDiff;
-		emoteManager.update(timeDiff);
+		emoteManager.update(timeDiff, entity);
 		state.save(model);
-		
+
 		lastMs = currTime;
 		timeDone += timeDiff;
 	}
-	
+
 	public boolean isDone() {
 		return timeDone >= totalTime || player.swingProgress > 0 || player.hurtTime > 0;
 	}

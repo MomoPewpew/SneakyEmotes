@@ -1,5 +1,6 @@
 package vazkii.aurelienribon.tweenengine.primitives;
 
+import net.minecraft.entity.Entity;
 import vazkii.aurelienribon.tweenengine.TweenAccessor;
 
 /**
@@ -28,7 +29,7 @@ public class MutableFloat extends Number implements TweenAccessor<MutableFloat> 
 	}
 
 	@Override
-	public void setValues(MutableFloat target, int tweenType, float[] newValues) {
+	public void setValues(MutableFloat target, int tweenType, float[] newValues, Entity entity) {
 		target.value = newValues[0];
 	}
 }

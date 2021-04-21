@@ -2,6 +2,8 @@ package vazkii.aurelienribon.tweenengine;
 
 import java.util.function.Consumer;
 
+import net.minecraft.entity.Entity;
+
 /**
  * BaseTween is the base class of Tween and Timeline. It defines the
  * iteration engine used to play animations for any number of times, and in
@@ -389,8 +391,8 @@ public abstract class BaseTween<T> {
 	// Abstract API
 	// -------------------------------------------------------------------------
 
-	protected abstract void forceStartValues();
-	protected abstract void forceEndValues();
+	protected abstract void forceStartValues(Entity entity);
+	protected abstract void forceEndValues(Entity entity);
 
 	protected abstract boolean containsTarget(Object target);
 	protected abstract boolean containsTarget(Object target, int tweenType);
@@ -402,23 +404,23 @@ public abstract class BaseTween<T> {
 	protected void initializeOverride() {
 	}
 
-	protected void updateOverride(int step, int lastStep, boolean isIterationStep, float delta) {
+	protected void updateOverride(int step, int lastStep, boolean isIterationStep, float delta, Entity entity) {
 	}
 
-	protected void forceToStart() {
+	protected void forceToStart(Entity entity) {
 		currentTime = -delay;
 		step = -1;
 		isIterationStep = false;
-		if (isReverse(0)) forceEndValues();
-		else forceStartValues();
+		if (isReverse(0)) forceEndValues(entity);
+		else forceStartValues(entity);
 	}
 
-	protected void forceToEnd(float time) {
+	protected void forceToEnd(float time, Entity entity) {
 		currentTime = time - getFullDuration();
 		step = repeatCnt*2 + 1;
 		isIterationStep = false;
-		if (isReverse(repeatCnt*2)) forceStartValues();
-		else forceEndValues();
+		if (isReverse(repeatCnt*2)) forceStartValues(entity);
+		else forceEndValues(entity);
 	}
 
 	protected void callCallback(int type) {
@@ -455,7 +457,7 @@ public abstract class BaseTween<T> {
 	 *
 	 * @param delta A delta time between now and the last call.
 	 */
-	public void update(float delta) {
+	public void update(float delta, Entity entity) {
 		if (!isStarted || isPaused || isKilled) return;
 
 		deltaTime = delta;
@@ -465,8 +467,8 @@ public abstract class BaseTween<T> {
 		}
 
 		if (isInitialized) {
-			testRelaunch();
-			updateStep();
+			testRelaunch(entity);
+			updateStep(entity);
 			testCompletion();
 		}
 
@@ -487,7 +489,7 @@ public abstract class BaseTween<T> {
 		}
 	}
 
-	private void testRelaunch() {
+	private void testRelaunch(Entity entity) {
 		if (!isIterationStep && repeatCnt >= 0 && step < 0 && currentTime+deltaTime >= 0) {
 			assert step == -1;
 			isIterationStep = true;
@@ -497,7 +499,7 @@ public abstract class BaseTween<T> {
 			currentTime = 0;
 			callCallback(TweenCallback.BEGIN);
 			callCallback(TweenCallback.START);
-			updateOverride(step, step-1, isIterationStep, delta);
+			updateOverride(step, step-1, isIterationStep, delta, entity);
 
 		} else if (!isIterationStep && repeatCnt >= 0 && step > repeatCnt*2 && currentTime+deltaTime < 0) {
 			assert step == repeatCnt*2 + 1;
@@ -508,11 +510,11 @@ public abstract class BaseTween<T> {
 			currentTime = duration;
 			callCallback(TweenCallback.BACK_BEGIN);
 			callCallback(TweenCallback.BACK_START);
-			updateOverride(step, step+1, isIterationStep, delta);
+			updateOverride(step, step+1, isIterationStep, delta, entity);
 		}
 	}
 
-	private void updateStep() {
+	private void updateStep(Entity entity) {
 		while (isValid(step)) {
 			if (!isIterationStep && currentTime+deltaTime <= 0) {
 				isIterationStep = true;
@@ -522,9 +524,9 @@ public abstract class BaseTween<T> {
 				deltaTime -= delta;
 				currentTime = duration;
 
-				if (isReverse(step)) forceStartValues(); else forceEndValues();
+				if (isReverse(step)) forceStartValues(entity); else forceEndValues(entity);
 				callCallback(TweenCallback.BACK_START);
-				updateOverride(step, step+1, isIterationStep, delta);
+				updateOverride(step, step+1, isIterationStep, delta, entity);
 
 			} else if (!isIterationStep && currentTime+deltaTime >= repeatDelay) {
 				isIterationStep = true;
@@ -534,9 +536,9 @@ public abstract class BaseTween<T> {
 				deltaTime -= delta;
 				currentTime = 0;
 
-				if (isReverse(step)) forceEndValues(); else forceStartValues();
+				if (isReverse(step)) forceEndValues(entity); else forceStartValues(entity);
 				callCallback(TweenCallback.START);
-				updateOverride(step, step-1, isIterationStep, delta);
+				updateOverride(step, step-1, isIterationStep, delta, entity);
 
 			} else if (isIterationStep && currentTime+deltaTime < 0) {
 				isIterationStep = false;
@@ -546,7 +548,7 @@ public abstract class BaseTween<T> {
 				deltaTime -= delta;
 				currentTime = 0;
 
-				updateOverride(step, step+1, false, delta);
+				updateOverride(step, step+1, false, delta, entity);
 				callCallback(TweenCallback.BACK_END);
 
 				if (step < 0 && repeatCnt >= 0) callCallback(TweenCallback.BACK_COMPLETE);
@@ -560,7 +562,7 @@ public abstract class BaseTween<T> {
 				deltaTime -= delta;
 				currentTime = duration;
 
-				updateOverride(step, step-1, false, delta);
+				updateOverride(step, step-1, false, delta, entity);
 				callCallback(TweenCallback.END);
 
 				if (step > repeatCnt*2 && repeatCnt >= 0) callCallback(TweenCallback.COMPLETE);
@@ -570,7 +572,7 @@ public abstract class BaseTween<T> {
 				float delta = deltaTime;
 				deltaTime -= delta;
 				currentTime += delta;
-				updateOverride(step, step, true, delta);
+				updateOverride(step, step, true, delta, entity);
 				break;
 
 			} else {

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import net.minecraft.entity.Entity;
+
 /**
  * A TweenManager updates all your tweens and timelines at once.
  * Its main interest is that it handles the tween/timeline life-cycles for you,
@@ -147,7 +149,7 @@ public class TweenManager {
 	 * tweaking this delta time. Multiply it by -1 to play the animation
 	 * backward, or by 0.5 to play it twice slower than its normal speed.
 	 */
-	public void update(float delta) {
+	public void update(float delta, Entity entity) {
 		for (int i=objects.size()-1; i>=0; i--) {
 			BaseTween<?> obj = objects.get(i);
 			if (obj.isFinished() && obj.isAutoRemoveEnabled) {
@@ -158,9 +160,9 @@ public class TweenManager {
 
 		if (!isPaused) {
 			if (delta >= 0) {
-				for (BaseTween<?> object : objects) object.update(delta);
+				for (BaseTween<?> object : objects) object.update(delta, entity);
 			} else {
-				for (int i=objects.size()-1; i>=0; i--) objects.get(i).update(delta);
+				for (int i=objects.size()-1; i>=0; i--) objects.get(i).update(delta, entity);
 			}
 		}
 	}

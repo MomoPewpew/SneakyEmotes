@@ -12,6 +12,7 @@ package vazkii.quark.vanity.client.emotes;
 
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -36,7 +37,7 @@ public class EmoteState {
 		}
 	}
 
-	public void load(ModelBiped model) {
+	public void load(ModelBiped model, Entity entity) {
 		if(states.length == 0) {
 			states = new float[ModelAccessor.STATE_COUNT];
 		} else {
@@ -46,7 +47,7 @@ public class EmoteState {
 
 				int part = (i / ModelAccessor.MODEL_PROPS) * ModelAccessor.MODEL_PROPS;
 				if(emote.usesBodyPart(part))
-					ModelAccessor.INSTANCE.setValues(model, i, values);
+					ModelAccessor.INSTANCE.setValues(model, i, values, entity);
 			}
 		}
 	}

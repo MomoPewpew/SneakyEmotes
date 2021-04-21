@@ -5,6 +5,8 @@ import vazkii.aurelienribon.tweenengine.equations.Quad;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.minecraft.entity.Entity;
+
 /**
  * Core class of the Tween Engine. A Tween is basically an interpolation
  * between two values of an object attribute. However, the main interest of a
@@ -819,18 +821,18 @@ public final class Tween extends BaseTween<Tween> {
 	}
 
 	@Override
-	protected void updateOverride(int step, int lastStep, boolean isIterationStep, float delta) {
+	protected void updateOverride(int step, int lastStep, boolean isIterationStep, float delta, Entity entity) {
 		if (target == null || equation == null) return;
 
 		// Case iteration end has been reached
 
 		if (!isIterationStep && step > lastStep) {
-			accessor.setValues(target, type, isReverse(lastStep) ? startValues : targetValues);
+			accessor.setValues(target, type, isReverse(lastStep) ? startValues : targetValues, entity);
 			return;
 		}
 
 		if (!isIterationStep && step < lastStep) {
-			accessor.setValues(target, type, isReverse(lastStep) ? targetValues : startValues);
+			accessor.setValues(target, type, isReverse(lastStep) ? targetValues : startValues, entity);
 			return;
 		}
 
@@ -843,12 +845,12 @@ public final class Tween extends BaseTween<Tween> {
 		// Case duration equals zero
 
 		if (duration < 0.00000000001f && delta > -0.00000000001f) {
-			accessor.setValues(target, type, isReverse(step) ? targetValues : startValues);
+			accessor.setValues(target, type, isReverse(step) ? targetValues : startValues, entity);
 			return;
 		}
 
 		if (duration < 0.00000000001f && delta < 0.00000000001f) {
-			accessor.setValues(target, type, isReverse(step) ? startValues : targetValues);
+			accessor.setValues(target, type, isReverse(step) ? startValues : targetValues, entity);
 			return;
 		}
 
@@ -874,7 +876,7 @@ public final class Tween extends BaseTween<Tween> {
 			}
 		}
 
-		accessor.setValues(target, type, accessorBuffer);
+		accessor.setValues(target, type, accessorBuffer, entity);
 	}
 
 	// -------------------------------------------------------------------------
@@ -882,15 +884,15 @@ public final class Tween extends BaseTween<Tween> {
 	// -------------------------------------------------------------------------
 
 	@Override
-	protected void forceStartValues() {
+	protected void forceStartValues(Entity entity) {
 		if (target == null) return;
-		accessor.setValues(target, type, startValues);
+		accessor.setValues(target, type, startValues, entity);
 	}
 
 	@Override
-	protected void forceEndValues() {
+	protected void forceEndValues(Entity entity) {
 		if (target == null) return;
-		accessor.setValues(target, type, targetValues);
+		accessor.setValues(target, type, targetValues, entity);
 	}
 
 	@Override
