@@ -104,7 +104,7 @@ public class ModelAccessor implements TweenAccessor<ModelBiped> {
 	}
 
 	@Override
-	public int getValues(ModelBiped target, int tweenType, float[] returnValues) {
+	public int getValues(ModelBiped target, int tweenType, float[] returnValues, Entity entity) {
 		int axis = tweenType % MODEL_PROPS;
 		int bodyPart = tweenType - axis;
 
@@ -131,13 +131,12 @@ public class ModelAccessor implements TweenAccessor<ModelBiped> {
 			case ROT_Z:
 				returnValues[0] = model.rotateAngleZ; break;
 			case OFF_X:
-				returnValues[0] = model.offsetX; break;
+				returnValues[0] = (model.offsetX / ModelBipedAlt.getPartConfigScale(entity, BODY, OFF_Y)); break;
 			case OFF_Y:
-				returnValues[0] = model.offsetY; break;
+				returnValues[0] = (model.offsetY / ModelBipedAlt.getPartConfigScale(entity, BODY, OFF_Y)); break;
 			case OFF_Z:
-				returnValues[0] = model.offsetZ; break;
+				returnValues[0] = (model.offsetZ / ModelBipedAlt.getPartConfigScale(entity, BODY, OFF_Y)); break;
 		}
-
 		return 1;
 	}
 
@@ -213,115 +212,19 @@ public class ModelAccessor implements TweenAccessor<ModelBiped> {
 		if(part == null)
 			return;
 
-		switch(bodyPart) {
-			case HEAD : {
-					switch(axis) {
-					case ROT_X:
-						part.rotateAngleX = val; break;
-					case ROT_Y:
-						part.rotateAngleY = val; break;
-					case ROT_Z:
-						part.rotateAngleZ = val; break;
-					case OFF_X:
-						part.offsetX = val; break;
-					case OFF_Y:
-						part.offsetY = val; break;
-					case OFF_Z:
-						part.offsetZ = val; break;
-				}
-			}; break; case BODY : {
-				switch(axis) {
-					case ROT_X:
-						part.rotateAngleX = val; break;
-					case ROT_Y:
-						part.rotateAngleY = val; break;
-					case ROT_Z:
-						part.rotateAngleZ = val; break;
-					case OFF_X:
-						part.offsetX = (val * ModelBipedAlt.getPartConfigScale(entity, bodyPart, OFF_Y)); break;
-					case OFF_Y:
-						part.offsetY = (val * ModelBipedAlt.getPartConfigScale(entity, bodyPart, OFF_Y)); break;
-					case OFF_Z:
-						part.offsetZ = (val * ModelBipedAlt.getPartConfigScale(entity, bodyPart, OFF_Y)); break;
-				}
-			}; break; case RIGHT_ARM : {
-				switch(axis) {
-					case ROT_X:
-						part.rotateAngleX = val; break;
-					case ROT_Y:
-						part.rotateAngleY = val; break;
-					case ROT_Z:
-						part.rotateAngleZ = val; break;
-					case OFF_X:
-						part.offsetX = val; break;
-					case OFF_Y:
-						part.offsetY = val; break;
-					case OFF_Z:
-						part.offsetZ = val; break;
-				}
-			}; break; case LEFT_ARM : {
-				switch(axis) {
-					case ROT_X:
-						part.rotateAngleX = val; break;
-					case ROT_Y:
-						part.rotateAngleY = val; break;
-					case ROT_Z:
-						part.rotateAngleZ = val; break;
-					case OFF_X:
-						part.offsetX = val; break;
-					case OFF_Y:
-						part.offsetY = val; break;
-					case OFF_Z:
-						part.offsetZ = val; break;
-				}
-			}; break; case RIGHT_LEG : {
-				switch(axis) {
-					case ROT_X:
-						part.rotateAngleX = val; break;
-					case ROT_Y:
-						part.rotateAngleY = val; break;
-					case ROT_Z:
-						part.rotateAngleZ = val; break;
-					case OFF_X:
-						part.offsetX = val; break;
-					case OFF_Y:
-						part.offsetY = val; break;
-					case OFF_Z:
-						part.offsetZ = val; break;
-				}
-			}; break; case LEFT_LEG : {
-					switch(axis) {
-					case ROT_X:
-						part.rotateAngleX = val; break;
-					case ROT_Y:
-						part.rotateAngleY = val; break;
-					case ROT_Z:
-						part.rotateAngleZ = val; break;
-					case OFF_X:
-						part.offsetX = val; break;
-					case OFF_Y:
-						part.offsetY = val; break;
-					case OFF_Z:
-						part.offsetZ = val; break;
-				}
-			}; break; default : {
-				switch(axis) {
-					case ROT_X:
-						part.rotateAngleX = val; break;
-					case ROT_Y:
-						part.rotateAngleY = val; break;
-					case ROT_Z:
-						part.rotateAngleZ = val; break;
-					case OFF_X:
-						part.offsetX = val; break;
-					case OFF_Y:
-						part.offsetY = val; break;
-					case OFF_Z:
-						part.offsetZ = val; break;
-				}
-			}
+		switch(axis) {
+			case ROT_X:
+				part.rotateAngleX = val; break;
+			case ROT_Y:
+				part.rotateAngleY = val; break;
+			case ROT_Z:
+				part.rotateAngleZ = val; break;
+			case OFF_X:
+				part.offsetX = (val * ModelBipedAlt.getPartConfigScale(entity, BODY, OFF_Y)); break;
+			case OFF_Y:
+				part.offsetY = (val * ModelBipedAlt.getPartConfigScale(entity, BODY, OFF_Y)); break;
+			case OFF_Z:
+				part.offsetZ = (val * ModelBipedAlt.getPartConfigScale(entity, BODY, OFF_Y)); break;
 		}
 	}
-
 }
-

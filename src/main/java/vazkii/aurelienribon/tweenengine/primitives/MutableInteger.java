@@ -23,7 +23,7 @@ public class MutableInteger extends Number implements TweenAccessor<MutableInteg
 	@Override public double doubleValue() {return value;}
 
 	@Override
-	public int getValues(MutableInteger target, int tweenType, float[] returnValues) {
+	public int getValues(MutableInteger target, int tweenType, float[] returnValues, Entity entity) {
 		returnValues[0] = target.value;
 		return 1;
 	}

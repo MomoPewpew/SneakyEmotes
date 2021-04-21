@@ -53,7 +53,7 @@ public abstract class EmoteBase {
 	}
 
 	void startTimeline(EntityPlayer player, ModelBiped model) {
-		Timeline timeline = getTimeline(player, model).start(emoteManager);
+		Timeline timeline = getTimeline(player, model).start(emoteManager, player);
 		totalTime = timeline.getFullDuration();
 	}
 
@@ -74,7 +74,7 @@ public abstract class EmoteBase {
 		long timeDiff = currTime - lastMs;
 		animatedTime += timeDiff;
 		emoteManager.update(timeDiff, entity);
-		state.save(model);
+		state.save(model, entity);
 
 		lastMs = currTime;
 		timeDone += timeDiff;

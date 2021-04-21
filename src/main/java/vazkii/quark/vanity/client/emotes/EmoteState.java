@@ -16,6 +16,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import noppes.mpm.client.model.ModelBipedAlt;
 
 import static vazkii.quark.vanity.client.emotes.EmoteBase.PI_F;
 
@@ -29,10 +30,10 @@ public class EmoteState {
 		this.emote = emote;
 	}
 
-	public void save(ModelBiped model) {
+	public void save(ModelBiped model, Entity entity) {
 		float[] values = new float[1];
 		for(int i = 0; i < ModelAccessor.STATE_COUNT; i++) {
-			ModelAccessor.INSTANCE.getValues(model, i, values);
+			ModelAccessor.INSTANCE.getValues(model, i, values, entity);
 			states[i] = values[0];
 		}
 	}
@@ -56,9 +57,9 @@ public class EmoteState {
 		if(states.length == 0)
 			return;
 
-		float offsetX = states[ModelAccessor.MODEL_OFF_X];
-		float offsetY = states[ModelAccessor.MODEL_OFF_Y];
-		float offsetZ = states[ModelAccessor.MODEL_OFF_Z];
+		float offsetX = (states[ModelAccessor.MODEL_OFF_X] * ModelBipedAlt.getPartConfigScale((Entity) player, 30, 4));
+		float offsetY = (states[ModelAccessor.MODEL_OFF_Y] * ModelBipedAlt.getPartConfigScale((Entity) player, 30, 4));
+		float offsetZ = (states[ModelAccessor.MODEL_OFF_Z] * ModelBipedAlt.getPartConfigScale((Entity) player, 30, 4));
 		float rotX = states[ModelAccessor.MODEL_X];
 		float rotY = states[ModelAccessor.MODEL_Y];
 		float rotZ = states[ModelAccessor.MODEL_Z];

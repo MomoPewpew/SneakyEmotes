@@ -58,9 +58,9 @@ public class TweenManager {
 	 *
 	 * @return The manager, for instruction chaining.
 	 */
-	public TweenManager add(BaseTween<?> object) {
+	public TweenManager add(BaseTween<?> object, Entity entity) {
 		if (!objects.contains(object)) objects.add(object);
-		if (object.isAutoStartEnabled) object.start();
+		if (object.isAutoStartEnabled) object.start(entity);
 		return this;
 	}
 

@@ -70,7 +70,7 @@ public interface TweenAccessor<T> {
 	 * @param returnValues An array which should be modified by this method.
 	 * @return The count of modified slots from the returnValues array.
 	 */
-	int getValues(T target, int tweenType, float[] returnValues);
+	int getValues(T target, int tweenType, float[] returnValues, Entity entity);
 
 	/**
 	 * This method is called by the Tween Engine each time a running tween

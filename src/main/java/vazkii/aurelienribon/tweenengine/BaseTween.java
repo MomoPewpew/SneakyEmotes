@@ -76,7 +76,7 @@ public abstract class BaseTween<T> {
 	 * @return The current object, for chaining instructions.
 	 */
 	@SuppressWarnings("unchecked")
-	public T build() {
+	public T build(Entity entity) {
 		return (T) this;
 	}
 
@@ -88,8 +88,8 @@ public abstract class BaseTween<T> {
 	 * @return The current object, for chaining instructions.
 	 */
 	@SuppressWarnings("unchecked")
-	public T start() {
-		build();
+	public T start(Entity entity) {
+		build(entity);
 		currentTime = 0;
 		isStarted = true;
 		return (T) this;
@@ -102,8 +102,8 @@ public abstract class BaseTween<T> {
 	 * @return The current object, for chaining instructions.
 	 */
 	@SuppressWarnings("unchecked")
-	public T start(TweenManager manager) {
-		manager.add(this);
+	public T start(TweenManager manager, Entity entity) {
+		manager.add(this, entity);
 		return (T) this;
 	}
 
@@ -401,7 +401,7 @@ public abstract class BaseTween<T> {
 	// Protected API
 	// -------------------------------------------------------------------------
 
-	protected void initializeOverride() {
+	protected void initializeOverride(Entity entity) {
 	}
 
 	protected void updateOverride(int step, int lastStep, boolean isIterationStep, float delta, Entity entity) {
@@ -463,7 +463,7 @@ public abstract class BaseTween<T> {
 		deltaTime = delta;
 
 		if (!isInitialized) {
-			initialize();
+			initialize(entity);
 		}
 
 		if (isInitialized) {
@@ -476,9 +476,9 @@ public abstract class BaseTween<T> {
 		deltaTime = 0;
 	}
 
-	private void initialize() {
+	private void initialize(Entity entity) {
 		if (currentTime+deltaTime >= delay) {
-			initializeOverride();
+			initializeOverride(entity);
 			isInitialized = true;
 			isIterationStep = true;
 			step = 0;

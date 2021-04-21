@@ -782,12 +782,12 @@ public final class Tween extends BaseTween<Tween> {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public Tween build() {
+	public Tween build(Entity entity) {
 		if (target == null) return this;
 
 		accessor = (TweenAccessor<Object>) registeredAccessors.get(targetClass);
 		if (accessor == null && target instanceof TweenAccessor) accessor = (TweenAccessor<Object>) target;
-		if (accessor != null) combinedAttrsCnt = accessor.getValues(target, type, accessorBuffer);
+		if (accessor != null) combinedAttrsCnt = accessor.getValues(target, type, accessorBuffer, entity);
 		else throw new RuntimeException("No TweenAccessor was found for the target");
 
 		if (combinedAttrsCnt > combinedAttrsLimit) throwCombinedAttrsLimitReached();
@@ -800,10 +800,10 @@ public final class Tween extends BaseTween<Tween> {
 	}
 
 	@Override
-	protected void initializeOverride() {
+	protected void initializeOverride(Entity entity) {
 		if (target == null) return;
 
-		accessor.getValues(target, type, startValues);
+		accessor.getValues(target, type, startValues, entity);
 
 		for (int i=0; i<combinedAttrsCnt; i++) {
 			targetValues[i] += isRelative ? startValues[i] : 0;

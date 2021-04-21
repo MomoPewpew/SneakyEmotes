@@ -232,7 +232,7 @@ public final class Timeline extends BaseTween<Timeline> {
 	// -------------------------------------------------------------------------
 
 	@Override
-	public Timeline build() {
+	public Timeline build(Entity entity) {
 		if (isBuilt) return this;
 
 		duration = 0;
@@ -240,7 +240,7 @@ public final class Timeline extends BaseTween<Timeline> {
 		for (BaseTween<?> obj : children) {
 			if (obj.getRepeatCount() < 0)
 				throw new RuntimeException("You can't push an object with infinite repetitions in a timeline");
-			obj.build();
+			obj.build(entity);
 
 			switch (mode) {
 				case SEQUENCE:
@@ -260,11 +260,11 @@ public final class Timeline extends BaseTween<Timeline> {
 	}
 
 	@Override
-	public Timeline start() {
-		super.start();
+	public Timeline start(Entity entity) {
+		super.start(entity);
 
 		for (BaseTween<?> obj : children) {
-			obj.start();
+			obj.start(entity);
 		}
 
 		return this;
