@@ -61,12 +61,12 @@ public class EmoteSystem extends Feature {
 	private static final String[] EMOTE_NAMES = new String[] {
 			"no",
 			"yes",
-			"wave", 
-			"salute", 
+			"wave",
+			"salute",
 			"cheer",
-			"clap", 
+			"clap",
 			"think",
-			"point", 
+			"point",
 			"shrug",
 			"headbang",
 			"weep",
@@ -74,8 +74,8 @@ public class EmoteSystem extends Feature {
 	};
 
 	private static final Set<String> PATREON_EMOTES = ImmutableSet.of(
-			"dance", 
-			"tpose", 
+			"dance",
+			"tpose",
 			"dab",
 			"jet",
 			"exorcist",
@@ -85,7 +85,7 @@ public class EmoteSystem extends Feature {
 	public static final int EMOTE_BUTTON_WIDTH = 25;
 	public static final int EMOTES_PER_ROW = 3;
 
-	private static final List<String> EMOTE_NAME_LIST = Lists.newArrayList(getEmoteNames());
+	private static final List<String> EMOTE_NAME_LIST = Lists.newArrayList(EMOTE_NAMES);
 
 	private static final int EMOTE_BUTTON_START = 1800;
 	public static boolean emotesVisible = false;
@@ -103,7 +103,7 @@ public class EmoteSystem extends Feature {
 	@Override
 	public void setupConfig() {
 		enableKeybinds = loadPropBool("Enable Keybinds", "Should keybinds for emotes be generated? (They're all unbound by default)", true);
-		enabledEmotes = loadPropStringList("Enabled Emotes", "The enabled default emotes. Remove from this list to disable them. You can also re-order them, if you feel like it.", getEmoteNames());
+		enabledEmotes = loadPropStringList("Enabled Emotes", "The enabled default emotes. Remove from this list to disable them. You can also re-order them, if you feel like it.", EMOTE_NAMES);
 		customEmotes = loadPropStringList("Custom Emotes", "The list of Custom Emotes to be loaded.\nWatch the tutorial on Custom Emotes to learn how to make your own: https://youtu.be/ourHUkan6aQ", new String[0]);
 
 		customEmoteDebug = loadPropBool("Custom Emote Dev Mode", "Enable this to make custom emotes read the file every time they're triggered so you can edit on the fly.\nDO NOT ship enabled this in a modpack, please.", false);
@@ -133,7 +133,7 @@ public class EmoteSystem extends Feature {
 
 		for(String s : PATREON_EMOTES)
 			EmoteHandler.addEmote(s);
-		
+
 		for(String s : customEmotes)
 			EmoteHandler.addCustomEmote(s);
 
@@ -238,13 +238,13 @@ public class EmoteSystem extends Feature {
 	public void onKeyInput(KeyInputEvent event) {
 		onHotkey();
 	}
-	
+
 	@SubscribeEvent
 	@SideOnly(Side.CLIENT)
 	public void onMouseInput(MouseInputEvent event) {
 		onHotkey();
 	}
-	
+
 	public void onHotkey() {
 		Minecraft mc = Minecraft.getMinecraft();
 		if(mc.inGameHasFocus && enableKeybinds) {
@@ -252,7 +252,7 @@ public class EmoteSystem extends Feature {
 				if(key.isKeyDown()) {
 					String emote = ModKeybinds.emoteKeys.get(key);
 					Boolean emoting = false;
-					
+
 /*					if(EmoteHandler.getPlayeremotes().containsKey(mc.player.getName())) {
 						for (Entry<String, EmoteBase> pair : EmoteHandler.getPlayeremotes().entrySet()) {
 							if (pair.getKey() == mc.player.getName() && pair.getValue().desc.name == emote) {
@@ -260,13 +260,13 @@ public class EmoteSystem extends Feature {
 							}
 						}
 					}*/
-					
+
 					if(EmoteHandler.getPlayeremotes().containsKey(mc.player.getName())) {
 						if (EmoteHandler.getPlayerEmote(mc.player).desc.name == emote) {
 							emoting = true;
 						}
 					}
-					
+
 					if (emoting == false) {
 						NetworkHandler.INSTANCE.sendToServer(new MessageRequestEmote(emote));
 						return;
@@ -314,7 +314,7 @@ public class EmoteSystem extends Feature {
 	public static String[] getEmoteNames() {
 		return EMOTE_NAMES;
 	}
-	
+
 	public static Set<String> getPatreonEmoteNames() {
 		return PATREON_EMOTES;
 	}
