@@ -65,6 +65,12 @@ public final class EmoteHandler {
 		emoteMap.put(reg, desc);
 	}
 
+	public static void addBlockbenchEmote(String name) {
+		String reg = CUSTOM_PREFIX + name;
+		EmoteDescriptor desc = new BlockbenchEmoteDescriptor(name, reg, count++);
+		emoteMap.put(reg, desc);
+	}
+
 	public static void putEmote(AbstractClientPlayer player, String emoteName, int tier) {
 		if(emoteMap.containsKey(emoteName)) {
 			putEmote(player, emoteMap.get(emoteName), tier);

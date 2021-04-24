@@ -98,6 +98,7 @@ public class EmoteSystem extends Feature {
 
 	private String[] enabledEmotes;
 	private String[] customEmotes;
+	private String[] blockbenchEmotes;
 	private static boolean enableKeybinds;
 
 	@Override
@@ -105,6 +106,7 @@ public class EmoteSystem extends Feature {
 		enableKeybinds = loadPropBool("Enable Keybinds", "Should keybinds for emotes be generated? (They're all unbound by default)", true);
 		enabledEmotes = loadPropStringList("Enabled Emotes", "The enabled default emotes. Remove from this list to disable them. You can also re-order them, if you feel like it.", EMOTE_NAMES);
 		customEmotes = loadPropStringList("Custom Emotes", "The list of Custom Emotes to be loaded.\nWatch the tutorial on Custom Emotes to learn how to make your own: https://youtu.be/ourHUkan6aQ", new String[0]);
+		blockbenchEmotes = loadPropStringList("Blockbench Emotes", "This list works exactly the same as custom emotes, but it accepts Json outputs from Blockbench.", new String[0]);
 
 		customEmoteDebug = loadPropBool("Custom Emote Dev Mode", "Enable this to make custom emotes read the file every time they're triggered so you can edit on the fly.\nDO NOT ship enabled this in a modpack, please.", false);
 		emoteCommands = loadPropBool("Custom Emote Functions", "Allow custom emotes to run function files when a user prompts them.\n"
@@ -136,6 +138,9 @@ public class EmoteSystem extends Feature {
 
 		for(String s : customEmotes)
 			EmoteHandler.addCustomEmote(s);
+
+		for(String s : blockbenchEmotes)
+			EmoteHandler.addBlockbenchEmote(s);
 
 		if(enableKeybinds)
 			ModKeybinds.initEmoteKeybinds();

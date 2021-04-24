@@ -1,8 +1,9 @@
 package vazkii.quark.vanity.client.emotes;
 
-import com.google.common.collect.Lists;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import vazkii.aurelienribon.tweenengine.*;
@@ -183,8 +184,8 @@ public class BlockbenchEmoteTemplate extends EmoteTemplate {
 	}
 
 	private Timeline handle(ModelBiped model, EntityPlayer player, Timeline timeline, String s) throws IllegalArgumentException {
-		s = s.trim().replaceAll("[^a-zA-Z0-9._ #}]", "");
-		String[] translation = null;
+		s = s.trim().replaceAll("[^a-zA-Z0-9._ #}-]", "").toLowerCase();
+		String[] translation = new String[2];
 
 		if(s.startsWith("#") || s.isEmpty())
 			return timeline;
@@ -192,61 +193,78 @@ public class BlockbenchEmoteTemplate extends EmoteTemplate {
 		String[] tokens = s.trim().split(" ");
 		String function = tokens[0];
 
-		if (NumberUtils.isParsable(function) && function != "0.0") {
+		if (NumberUtils.isParsable(function) && !"0.0".equals(function)) {
 			String time = String.valueOf((Float.parseFloat(tokens[0]) - lasttime)  * this.speed * 1000);
 
 			translation[0] = "section";
-			translation[1] = "paralell";
+			translation[1] = "parallel";
+
 			timeline = functions.get(translation[0]).invoke(this, model, player, timeline, translation);
 
 			for (int i = 1; i < 4; i++) {
+				translation = new String[4];
 				translation[0] = "move";
+				translation[2] = time;
+
 				switch(i) {
 				case 1:
 					translation[1] = part + axisconstructor + "x";
+					if ("_off_".equals(axisconstructor)) {
+						translation[3] = String.valueOf(Float.parseFloat(tokens[i]) * (1.8 / 32));
+					} else {
+						translation[3] = String.valueOf(Float.parseFloat(tokens[i]) * (Math.PI / 180));
+					}
+					break;
 				case 2:
 					translation[1] = part + axisconstructor + "y";
+					if ("_off_".equals(axisconstructor)) {
+						translation[3] = String.valueOf(Float.parseFloat(tokens[i]) * (-1.8 / 32));
+					} else {
+						translation[3] = String.valueOf(Float.parseFloat(tokens[i]) * (Math.PI / 180));
+					}
+					break;
 				case 3:
 					translation[1] = part + axisconstructor + "z";
+					if ("_off_".equals(axisconstructor)) {
+						translation[3] = String.valueOf(Float.parseFloat(tokens[i]) * (1.8 / 32));
+					} else {
+						translation[3] = String.valueOf(Float.parseFloat(tokens[i]) * (Math.PI / 180));
+					}
+					break;
 				}
-				translation[2] = time;
-				if (axisconstructor == "_off_") {
-					translation[3] = String.valueOf(Float.parseFloat(tokens[i]) * (1.8 / 32));
-				} else {
-					translation[3] = tokens[i];
-				}
+
 				timeline = functions.get(translation[0]).invoke(this, model, player, timeline, translation);
 			}
-			translation = null;
+			translation = new String[1];
 			translation[0] = "end";
 			return functions.get(translation[0]).invoke(this, model, player, timeline, translation);
-		} else if (function == "}") {
+		} else if ("}".equals(function)) {
+			translation = new String[1];
 			translation[0] = "end";
 			return functions.get(translation[0]).invoke(this, model, player, timeline, translation);
-		} else if(tweenables.containsKey(function)) {
-			part = function.toLowerCase();
+		} else if (parts.containsKey(function)) {
+			part = function;
+			translation[0] = "use";
+			translation[1] =  part;
+			timeline = functions.get(translation[0]).invoke(this, model, player, timeline, translation);
+
 			translation[0] = "section";
-			translation[1] = "paralell";
+			translation[1] = "parallel";
 			return functions.get(translation[0]).invoke(this, model, player, timeline, translation);
-		} else if (function == "bones") {
+		} else if ("bones".equals(function)) {
 			translation[0] = "animation";
-			translation[1] = "paralell";
+			translation[1] = "parallel";
 			return functions.get(translation[0]).invoke(this, model, player, timeline, translation);
-		} else if (function == "rotation") {
+		} else if ("rotation".equals(function)) {
 			axisconstructor = "_";
 			lasttime = 0;
-			lasttarget[1] = "0";
-			lasttarget[2] = "0";
-			lasttarget[3] = "0";
 			translation[0] = "section";
 			translation[1] = "sequence";
+
 			return functions.get(translation[0]).invoke(this, model, player, timeline, translation);
-		} else if (function == "position") {
+		} else if ("position".equals(function)) {
 			axisconstructor = "_off_";
 			lasttime = 0;
-			lasttarget[1] = "0";
-			lasttarget[2] = "0";
-			lasttarget[3] = "0";
 			translation[0] = "section";
 			translation[1] = "sequence";
 			return functions.get(translation[0]).invoke(this, model, player, timeline, translation);
@@ -270,7 +288,7 @@ public class BlockbenchEmoteTemplate extends EmoteTemplate {
 		return name;
 	}
 
-	private static Timeline use(EmoteTemplate em, Timeline timeline, String[] tokens) throws IllegalArgumentException {
+	private static Timeline use(BlockbenchEmoteTemplate em, Timeline timeline, String[] tokens) throws IllegalArgumentException {
 		if(em.compiledOnce)
 			return timeline;
 
@@ -285,7 +303,7 @@ public class BlockbenchEmoteTemplate extends EmoteTemplate {
 		return timeline;
 	}
 
-	private static Timeline animation(EmoteTemplate em, Timeline timeline, String[] tokens) throws IllegalArgumentException {
+	private static Timeline animation(BlockbenchEmoteTemplate em, Timeline timeline, String[] tokens) throws IllegalArgumentException {
 		if(timeline != null)
 			throw new IllegalArgumentException("Illegal use of function animation, animation already started");
 
@@ -309,13 +327,14 @@ public class BlockbenchEmoteTemplate extends EmoteTemplate {
 		return newTimeline;
 	}
 
-	private static Timeline section(EmoteTemplate em, Timeline timeline, String[] tokens) throws IllegalArgumentException {
+	private static Timeline section(BlockbenchEmoteTemplate em, Timeline timeline, String[] tokens) throws IllegalArgumentException {
 		if(timeline == null)
 			throw new IllegalArgumentException("Illegal use of function section, animation not started");
 		assertParamSize(tokens, 2);
 
 		String type = tokens[1];
 		Timeline newTimeline;
+
 		switch(type) {
 			case "sequence":
 				newTimeline = Timeline.createSequence();
@@ -330,7 +349,7 @@ public class BlockbenchEmoteTemplate extends EmoteTemplate {
 		return newTimeline;
 	}
 
-	private static Timeline end(EmoteTemplate em, Timeline timeline, String[] tokens) throws IllegalArgumentException {
+	private static Timeline end(BlockbenchEmoteTemplate em, Timeline timeline, String[] tokens) throws IllegalArgumentException {
 		if(timeline == null)
 			throw new IllegalArgumentException("Illegal use of function end, animation not started");
 		assertParamSize(tokens, 1);
@@ -345,7 +364,7 @@ public class BlockbenchEmoteTemplate extends EmoteTemplate {
 		return poppedLine;
 	}
 
-	private static Timeline move(EmoteTemplate em, ModelBiped model, Timeline timeline, String[] tokens) throws IllegalArgumentException {
+	private static Timeline move(BlockbenchEmoteTemplate em, ModelBiped model, Timeline timeline, String[] tokens) throws IllegalArgumentException {
 		if(timeline == null)
 			throw new IllegalArgumentException("Illegal use of function move, animation not started");
 		if(tokens.length < 4)
@@ -409,7 +428,7 @@ public class BlockbenchEmoteTemplate extends EmoteTemplate {
 		return timeline;
 	}
 
-	private static Timeline pause(EmoteTemplate em, Timeline timeline, String[] tokens) throws IllegalArgumentException {
+	private static Timeline pause(BlockbenchEmoteTemplate em, Timeline timeline, String[] tokens) throws IllegalArgumentException {
 		assertParamSize(tokens, 2);
 		float ms = Float.parseFloat(tokens[1]) * em.speed;
 		return timeline.pushPause(ms);
@@ -436,7 +455,7 @@ public class BlockbenchEmoteTemplate extends EmoteTemplate {
 	}
 
 	private interface Function {
-		Timeline invoke(EmoteTemplate em, ModelBiped model, EntityPlayer player, Timeline timeline, String[] tokens) throws IllegalArgumentException;
+		Timeline invoke(BlockbenchEmoteTemplate em, ModelBiped model, EntityPlayer player, Timeline timeline, String[] tokens) throws IllegalArgumentException;
 	}
 
 }
