@@ -18,6 +18,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.*;
 
+import org.apache.commons.lang3.math.NumberUtils;
+
 @SideOnly(Side.CLIENT)
 public class JsonEmoteTemplate extends EmoteTemplate {
 
@@ -70,8 +72,6 @@ public class JsonEmoteTemplate extends EmoteTemplate {
 		}
 	}
 
-	public final String file;
-
 	public List<String> readLines;
 	public List<Integer> usedParts;
 	public Stack<Timeline> timelineStack;
@@ -79,9 +79,12 @@ public class JsonEmoteTemplate extends EmoteTemplate {
 	public int tier;
 	public boolean compiled = false;
 	public boolean compiledOnce = false;
-	private List<EmoteSound> activeSounds = Lists.newArrayList();
 
 	private String name;
+	private int tweenable;
+	private int part;
+	private float lasttime;
+	private float[] lasttarget;
 
 	public JsonEmoteTemplate(String file) {
 		super(file + ".json");
@@ -179,17 +182,48 @@ public class JsonEmoteTemplate extends EmoteTemplate {
 	}
 
 	private Timeline handle(ModelBiped model, EntityPlayer player, Timeline timeline, String s) throws IllegalArgumentException {
-		s = s.trim();
+		s = s.trim().replaceAll("[^a-zA-Z0-9._ #]", "");
+		String[] translation = null;
+
 		if(s.startsWith("#") || s.isEmpty())
 			return timeline;
 
 		String[] tokens = s.trim().split(" ");
 		String function = tokens[0];
 
-		if(functions.containsKey(function))
-			return functions.get(function).invoke(this, model, player, timeline, tokens);
+		if (NumberUtils.isParsable(function) && function != "0.0") {
 
-		throw new IllegalArgumentException("Illegal function name " + function);
+		} else if(tweenables.containsKey(function)) {
+			tweenable = tweenables.get(function);
+			translation[0] = "section";
+			translation[1] = "paralell";
+			return functions.get(translation[0]).invoke(this, model, player, timeline, translation);
+		} else if (function == "bones") {
+			translation[0] = "animation";
+			translation[1] = "paralell";
+			return functions.get(translation[0]).invoke(this, model, player, timeline, translation);
+		} else if (function == "rotation") {
+			part = tweenable;
+			lasttime = 0;
+			lasttarget[1] = 0;
+			lasttarget[2] = 0;
+			lasttarget[3] = 0;
+			translation[0] = "section";
+			translation[1] = "sequence";
+			return functions.get(translation[0]).invoke(this, model, player, timeline, translation);
+		} else if (function == "position") {
+			//TODO: Turn 3 into OFF_X once it works
+			part = tweenable + 3;
+			lasttime = 0;
+			lasttarget[1] = 0;
+			lasttarget[2] = 0;
+			lasttarget[3] = 0;
+			translation[0] = "section";
+			translation[1] = "sequence";
+			return functions.get(translation[0]).invoke(this, model, player, timeline, translation);
+		}
+
+		return timeline;
 	}
 
 	@Override
