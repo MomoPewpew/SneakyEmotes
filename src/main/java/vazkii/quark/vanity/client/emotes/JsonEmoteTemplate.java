@@ -82,9 +82,10 @@ public class JsonEmoteTemplate extends EmoteTemplate {
 
 	private String name;
 	private int tweenable;
-	private int part;
+	private String part;
+	private String axisconstructor;
 	private float lasttime;
-	private float[] lasttarget;
+	private String[] lasttarget;
 
 	public JsonEmoteTemplate(String file) {
 		super(file + ".json");
@@ -182,7 +183,7 @@ public class JsonEmoteTemplate extends EmoteTemplate {
 	}
 
 	private Timeline handle(ModelBiped model, EntityPlayer player, Timeline timeline, String s) throws IllegalArgumentException {
-		s = s.trim().replaceAll("[^a-zA-Z0-9._ #]", "");
+		s = s.trim().replaceAll("[^a-zA-Z0-9._ #}]", "");
 		String[] translation = null;
 
 		if(s.startsWith("#") || s.isEmpty())
@@ -192,9 +193,38 @@ public class JsonEmoteTemplate extends EmoteTemplate {
 		String function = tokens[0];
 
 		if (NumberUtils.isParsable(function) && function != "0.0") {
+			String time = String.valueOf((Float.parseFloat(tokens[0]) - lasttime)  * this.speed * 1000);
 
+			translation[0] = "section";
+			translation[1] = "paralell";
+			timeline = functions.get(translation[0]).invoke(this, model, player, timeline, translation);
+
+			for (int i = 1; i < 4; i++) {
+				translation[0] = "move";
+				switch(i) {
+				case 1:
+					translation[1] = part + axisconstructor + "x";
+				case 2:
+					translation[1] = part + axisconstructor + "y";
+				case 3:
+					translation[1] = part + axisconstructor + "z";
+				}
+				translation[2] = time;
+				if (axisconstructor == "_off_") {
+					translation[3] = String.valueOf(Float.parseFloat(tokens[i]) * (1.8 / 32));
+				} else {
+					translation[3] = tokens[i];
+				}
+				timeline = functions.get(translation[0]).invoke(this, model, player, timeline, translation);
+			}
+			translation = null;
+			translation[0] = "end";
+			return functions.get(translation[0]).invoke(this, model, player, timeline, translation);
+		} else if (function == "}") {
+			translation[0] = "end";
+			return functions.get(translation[0]).invoke(this, model, player, timeline, translation);
 		} else if(tweenables.containsKey(function)) {
-			tweenable = tweenables.get(function);
+			part = function.toLowerCase();
 			translation[0] = "section";
 			translation[1] = "paralell";
 			return functions.get(translation[0]).invoke(this, model, player, timeline, translation);
@@ -203,21 +233,20 @@ public class JsonEmoteTemplate extends EmoteTemplate {
 			translation[1] = "paralell";
 			return functions.get(translation[0]).invoke(this, model, player, timeline, translation);
 		} else if (function == "rotation") {
-			part = tweenable;
+			axisconstructor = "_";
 			lasttime = 0;
-			lasttarget[1] = 0;
-			lasttarget[2] = 0;
-			lasttarget[3] = 0;
+			lasttarget[1] = "0";
+			lasttarget[2] = "0";
+			lasttarget[3] = "0";
 			translation[0] = "section";
 			translation[1] = "sequence";
 			return functions.get(translation[0]).invoke(this, model, player, timeline, translation);
 		} else if (function == "position") {
-			//TODO: Turn 3 into OFF_X once it works
-			part = tweenable + 3;
+			axisconstructor = "_off_";
 			lasttime = 0;
-			lasttarget[1] = 0;
-			lasttarget[2] = 0;
-			lasttarget[3] = 0;
+			lasttarget[1] = "0";
+			lasttarget[2] = "0";
+			lasttarget[3] = "0";
 			translation[0] = "section";
 			translation[1] = "sequence";
 			return functions.get(translation[0]).invoke(this, model, player, timeline, translation);
