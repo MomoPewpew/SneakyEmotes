@@ -21,7 +21,7 @@ import java.util.*;
 import org.apache.commons.lang3.math.NumberUtils;
 
 @SideOnly(Side.CLIENT)
-public class JsonEmoteTemplate extends EmoteTemplate {
+public class BlockbenchEmoteTemplate extends EmoteTemplate {
 
 	private static final Map<String, Integer> parts = new HashMap<>();
 	private static final Map<String, Integer> tweenables = new HashMap<>();
@@ -87,7 +87,7 @@ public class JsonEmoteTemplate extends EmoteTemplate {
 	private float lasttime;
 	private String[] lasttarget;
 
-	public JsonEmoteTemplate(String file) {
+	public BlockbenchEmoteTemplate(String file) {
 		super(file + ".json");
 
 		if(name == null)
