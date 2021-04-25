@@ -13,3 +13,4 @@ List of additions:
 * Part offsets and model offsets now scale with your MorePlayerModels body size
 * Added a new emote catagory "Blockbench emote" which parses blockbench .json files instead of quark .emote files
 * Added /ce or /cancelemote command that cancels emotes
+* Reworked the emote GUI
