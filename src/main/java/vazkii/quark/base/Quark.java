@@ -29,6 +29,7 @@ import org.apache.logging.log4j.Logger;
 import vazkii.quark.base.lib.LibMisc;
 import vazkii.quark.base.proxy.CommonProxy;
 import vazkii.quark.experimental.features.RejectMods;
+import vazkii.quark.vanity.feature.CancelEmoteCommand;
 import vazkii.quark.vanity.feature.EmoteCommand;
 
 import java.rmi.registry.RegistryHandler;
@@ -65,6 +66,7 @@ public class Quark {
 	@SideOnly(Side.CLIENT)
 	public void postInitClient(FMLPostInitializationEvent event) {
 		ClientCommandHandler.instance.registerCommand(new EmoteCommand());
+		ClientCommandHandler.instance.registerCommand(new CancelEmoteCommand());
 	}
 
 	@EventHandler

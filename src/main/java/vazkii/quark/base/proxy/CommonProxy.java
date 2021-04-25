@@ -54,6 +54,10 @@ public class CommonProxy {
 		// proxy override
 	}
 
+	public void cancelEmote(String playerName) {
+		// proxy override
+	}
+
 	public void addResourceOverride(String path, String file) {
 		// proxy override
 	}

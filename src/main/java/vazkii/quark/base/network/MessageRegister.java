@@ -28,6 +28,8 @@ public class MessageRegister {
 	public static void init() {
 		NetworkHandler.register(MessageDoEmote.class, Side.CLIENT);
 		NetworkHandler.register(MessageRequestEmote.class, Side.SERVER);
+		NetworkHandler.register(MessageCancelEmote.class, Side.CLIENT);
+		NetworkHandler.register(MessageRequestCancelEmote.class, Side.SERVER);
 
 		NetworkMessage.mapHandler(ITextComponent.class, MessageRegister::readComponent, MessageRegister::writeComponent);
 		NetworkMessage.mapHandler(UUID.class, MessageRegister::readUUID, MessageRegister::writeUUID);

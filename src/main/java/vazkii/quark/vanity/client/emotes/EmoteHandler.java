@@ -97,6 +97,12 @@ public final class EmoteHandler {
 		}
 	}
 
+	public static void cancelEmote(AbstractClientPlayer player) {
+		String name = player.getName();
+		playerEmotes.remove(name);
+		resetPlayer(player);
+	}
+
 	public static void updateEmotes(Entity e) {
 		if(e instanceof AbstractClientPlayer) {
 			AbstractClientPlayer player = (AbstractClientPlayer) e;

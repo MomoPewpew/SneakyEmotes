@@ -75,6 +75,14 @@ public class ClientProxy extends CommonProxy {
 	}
 
 	@Override
+	public void cancelEmote(String playerName) {
+		World world = Minecraft.getMinecraft().world;
+		EntityPlayer player = world.getPlayerEntityByName(playerName);
+		if(player instanceof AbstractClientPlayer)
+			EmoteHandler.cancelEmote((AbstractClientPlayer) player);
+	}
+
+	@Override
 	public void addResourceOverride(String path, String file) {
 		resourceProxy.addResource(path, file);
 	}
