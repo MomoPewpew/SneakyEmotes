@@ -25,11 +25,11 @@ public class GuiButtonEmote extends GuiButtonTranslucent {
 	public final EmoteDescriptor desc;
 
 	public GuiButtonEmote(int buttonId, int x, int y, EmoteDescriptor desc) {
-		super(buttonId, x, y, EmoteSystem.EMOTE_BUTTON_WIDTH - 1, EmoteSystem.EMOTE_BUTTON_WIDTH - 1, "");
+		super(buttonId, x, y, EmoteSystem.EMOTE_BUTTON_WIDTH - 1, EmoteSystem.EMOTE_BUTTON_HEIGHT - 1, desc.getLocalizedName());
 		this.desc = desc;
 	}
 
-	@Override
+/*	@Override
 	public void drawButton(@Nonnull Minecraft mc, int mouseX, int mouseY, float partial) {
 		super.drawButton(mc, mouseX, mouseY, partial);
 
@@ -43,16 +43,16 @@ public class GuiButtonEmote extends GuiButtonTranslucent {
 				mc.getTextureManager().bindTexture(tierTexture);
 				drawModalRectWithCustomSizedTexture(x + 4, y + 4, 0, 0, 16, 16, 16, 16);
 			}
-			
+
 			boolean hovered = mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;
 			if(hovered) {
 				String name = desc.getLocalizedName();
-				
+
 				mc.getTextureManager().bindTexture(LibMisc.GENERAL_ICONS_RESOURCE);
 				int w = mc.fontRenderer.getStringWidth(name);
 				int left = x - w;
 				int top = y - 8;
-				
+
 				GlStateManager.pushMatrix();
 				GlStateManager.color(1F, 1F, 1F);
 				GlStateManager.translate(0, 0, 100);
@@ -65,6 +65,6 @@ public class GuiButtonEmote extends GuiButtonTranslucent {
 				GlStateManager.popMatrix();
 			}
 		}
-	}
+	}*/
 
 }

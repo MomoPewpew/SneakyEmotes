@@ -82,8 +82,9 @@ public class EmoteSystem extends Feature {
 			"zombie"
 	);
 
-	public static final int EMOTE_BUTTON_WIDTH = 25;
-	public static final int EMOTES_PER_ROW = 3;
+	public static final int EMOTE_BUTTON_WIDTH = 60;
+	public static final int EMOTE_BUTTON_HEIGHT = 10;
+	public static final int EMOTES_PER_ROW = 4;
 
 	private static final List<String> EMOTE_NAME_LIST = Lists.newArrayList(EMOTE_NAMES);
 
@@ -146,13 +147,14 @@ public class EmoteSystem extends Feature {
 			ModKeybinds.initEmoteKeybinds();
 	}
 
-/*	@SubscribeEvent
+	@SubscribeEvent
 	@SideOnly(Side.CLIENT)
 	public void initGui(GuiScreenEvent.InitGuiEvent.Post event) {
 		GuiScreen gui = event.getGui();
 		if(gui instanceof GuiChat) {
 			List<GuiButton> list = event.getButtonList();
-			list.add(new GuiButtonTranslucent(EMOTE_BUTTON_START, gui.width - 1 - EMOTE_BUTTON_WIDTH * EMOTES_PER_ROW, gui.height - 40, EMOTE_BUTTON_WIDTH * EMOTES_PER_ROW, 20, I18n.format("quark.gui.emotes")));
+			list.add(new GuiButtonTranslucent(EMOTE_BUTTON_START, gui.width - 1 - EMOTE_BUTTON_WIDTH, gui.height - 40, EMOTE_BUTTON_HEIGHT * EMOTES_PER_ROW, 20, I18n.format("quark.gui.emotes")));
+			emotesVisible = false;
 
 			TIntObjectHashMap<List<EmoteDescriptor>> descriptorSorting = new TIntObjectHashMap<>();
 
@@ -194,7 +196,7 @@ public class EmoteSystem extends Feature {
 						int rowSize = Math.min(descriptors.size() - tierRow * EMOTES_PER_ROW, EMOTES_PER_ROW);
 
 						int x = gui.width - (((rowPos + 1) * 2 + EMOTES_PER_ROW - rowSize) * EMOTE_BUTTON_WIDTH / 2 + 1);
-						int y = gui.height - (40 + EMOTE_BUTTON_WIDTH * (rows - row));
+						int y = gui.height - (21 + EMOTE_BUTTON_HEIGHT * (rows - row));
 
 						GuiButton button = new GuiButtonEmote(EMOTE_BUTTON_START + i + 1, x, y, desc);
 						button.visible = emotesVisible;
@@ -235,8 +237,9 @@ public class EmoteSystem extends Feature {
 		} else if(button instanceof GuiButtonEmote) {
 			String name = ((GuiButtonEmote) button).desc.getRegistryName();
 			NetworkHandler.INSTANCE.sendToServer(new MessageRequestEmote(name));
+			Minecraft.getMinecraft().player.closeScreen();
 		}
-	}*/
+	}
 
 	@SubscribeEvent
 	@SideOnly(Side.CLIENT)

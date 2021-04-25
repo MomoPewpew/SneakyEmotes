@@ -26,7 +26,7 @@ public class GuiButtonTranslucent extends GuiButton {
 	public void drawTexturedModalRect(int x, int y, int textureX, int textureY, int width, int height) {
 		drawRect(x, y, x + width, y + height, Integer.MIN_VALUE);
 	}
-	
+
 	public void drawActualTexturedModalRect(int x, int y, int textureX, int textureY, int width, int height) {
 		float f = 0.00390625f;
 		Tessellator tessellator = Tessellator.getInstance();
