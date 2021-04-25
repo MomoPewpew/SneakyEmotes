@@ -23,19 +23,19 @@ public final class ConfigEvents {
 	public static void onGuiOpen(GuiOpenEvent event) {
 		if(ModuleLoader.firstLoad && event.getGui() instanceof GuiMainMenu) {
 			ModuleLoader.firstLoad = false;
-			event.setGui(new GuiConfigFirstLoad(event.getGui()));
+			//event.setGui(new GuiConfigFirstLoad(event.getGui()));
 		}
 	}
-	
+
 	@SubscribeEvent
 	public static void onGuiInit(GuiScreenEvent.InitGuiEvent event) {
 		GuiScreen gui = event.getGui();
-		
+
 		if(GlobalConfig.enableQButton && (gui instanceof GuiMainMenu || gui instanceof GuiIngameMenu)) {
-			ImmutableSet<String> targets = GlobalConfig.qButtonOnRight 
+			ImmutableSet<String> targets = GlobalConfig.qButtonOnRight
 					? ImmutableSet.of(I18n.format("fml.menu.modoptions"), I18n.format("menu.online").replace("Minecraft", "").trim())
 					: ImmutableSet.of(I18n.format("menu.options"), I18n.format("fml.menu.mods"));
-					
+
 			List<GuiButton> buttons = event.getButtonList();
 			for(GuiButton b : buttons)
 				if(targets.contains(b.displayString)) {
@@ -45,11 +45,11 @@ public final class ConfigEvents {
 				}
 		}
 	}
-	
+
 	@SubscribeEvent
 	public static void onButtonClick(GuiScreenEvent.ActionPerformedEvent event) {
 		if(event.getButton() instanceof GuiButtonColor)
 			Minecraft.getMinecraft().displayGuiScreen(new GuiConfigRoot(event.getGui()));
 	}
-	
+
 }
