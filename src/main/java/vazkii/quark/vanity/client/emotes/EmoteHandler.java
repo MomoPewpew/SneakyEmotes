@@ -154,7 +154,7 @@ public final class EmoteHandler {
 				boolean done = emote.isDone();
 				if(done) {
 					playerEmotes.remove(name);
-					resetPlayer(player);
+				//	resetPlayer(player);
 
 					Minecraft mc = Minecraft.getMinecraft();
 					if(mc.inGameHasFocus && EmoteSystem.isEnableKeybinds()) {
