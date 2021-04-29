@@ -253,6 +253,7 @@ public class EmoteSystem extends Feature {
 		onHotkey();
 	}
 
+	@SideOnly(Side.CLIENT)
 	public void onHotkey() {
 		Minecraft mc = Minecraft.getMinecraft();
 		if(mc.inGameHasFocus && enableKeybinds) {
