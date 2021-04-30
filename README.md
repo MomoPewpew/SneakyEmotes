@@ -14,3 +14,4 @@ List of additions:
 * Added a new emote catagory "Blockbench emote" which parses blockbench .json files instead of quark .emote files
 * Added /ce or /cancelemote command that cancels emotes
 * Reworked the emote GUI
+* Added a "walkstyle" command to the quark emote language. A walkstyle emote will only animate when you are moving.
