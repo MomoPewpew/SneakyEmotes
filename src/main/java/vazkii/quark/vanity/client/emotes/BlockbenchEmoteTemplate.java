@@ -35,7 +35,6 @@ public class BlockbenchEmoteTemplate extends EmoteTemplate {
 		functions.put("section", (em, model, player, timeline, tokens) -> section(em, timeline, tokens));
 		functions.put("end", (em, model, player, timeline, tokens) -> end(em, timeline, tokens));
 		functions.put("move", (em, model, player, timeline, tokens) -> move(em, model, timeline, tokens));
-		functions.put("pause", (em, model, player, timeline, tokens) -> pause(em, timeline, tokens));
 
 		Class<?> clazz = ModelAccessor.class;
 		Field[] fields = clazz.getDeclaredFields();
@@ -426,12 +425,6 @@ public class BlockbenchEmoteTemplate extends EmoteTemplate {
 		if(valid)
 			return timeline.push(tween);
 		return timeline;
-	}
-
-	private static Timeline pause(BlockbenchEmoteTemplate em, Timeline timeline, String[] tokens) throws IllegalArgumentException {
-		assertParamSize(tokens, 2);
-		float ms = Float.parseFloat(tokens[1]) * em.speed;
-		return timeline.pushPause(ms);
 	}
 
 	private static void assertParamSize(String[] tokens, int expect) throws IllegalArgumentException {
