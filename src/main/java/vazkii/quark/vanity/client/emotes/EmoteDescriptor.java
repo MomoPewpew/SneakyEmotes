@@ -24,11 +24,12 @@ public class EmoteDescriptor {
 	public final EmoteTemplate template;
 
 	private int tier;
-	
+	private boolean walkstyle;
+
 	public EmoteDescriptor(Class<? extends EmoteBase> clazz, String name, String regName, int index) {
 		this(clazz, name, regName, index, new ResourceLocation("quark", "textures/emotes/" + name + ".png"), new EmoteTemplate(name + ".emote"));
 	}
-	
+
 	public EmoteDescriptor(Class<? extends EmoteBase> clazz, String name, String regName, int index, ResourceLocation texture, EmoteTemplate template) {
 		this.clazz = clazz;
 		this.index = index;
@@ -37,27 +38,36 @@ public class EmoteDescriptor {
 		this.texture = texture;
 		this.template = template;
 		this.tier = template.tier;
+		this.walkstyle = template.walkstyle;
 	}
 
 	public void updateTier(EmoteTemplate template) {
 		this.tier = template.tier;
 	}
-	
+
+	public void updateWalkstyle(EmoteTemplate template) {
+		this.walkstyle = template.walkstyle;
+	}
+
 	public String getTranslationKey() {
 		return "quark.emote." + name;
 	}
-	
+
 	@SideOnly(Side.CLIENT)
 	public String getLocalizedName() {
 		return I18n.format(getTranslationKey());
 	}
-	
+
 	public String getRegistryName() {
 		return regName;
 	}
-	
+
 	public int getTier() {
 		return 0;
+	}
+
+	public boolean getWalkstyle() {
+		return walkstyle;
 	}
 
 	public ResourceLocation getTierTexture() {
@@ -73,7 +83,7 @@ public class EmoteDescriptor {
 			return TIER_1;
 		return null;
 	}
-	
+
 	public EmoteBase instantiate(EntityPlayer player, ModelBiped model, ModelBiped armorModel, ModelBiped armorLegModel) {
 		try {
 			return clazz.getConstructor(EmoteDescriptor.class, EntityPlayer.class, ModelBiped.class, ModelBiped.class, ModelBiped.class).newInstance(this, player, model, armorModel, armorLegModel);
@@ -81,5 +91,5 @@ public class EmoteDescriptor {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 }

@@ -47,6 +47,7 @@ public final class EmoteHandler {
 
 	public static final Map<String, EmoteDescriptor> emoteMap = new LinkedHashMap<>();
 	private static final Map<String, EmoteBase> playerEmotes = new HashMap<>();
+	private static final Map<String, EmoteBase> playerWalks = new HashMap<>();
 
 	private static int count;
 
@@ -94,12 +95,15 @@ public final class EmoteHandler {
 			EmoteBase emote = desc.instantiate(player, model, armorModel, armorLegModel);
 			emote.startAllTimelines();
 			playerEmotes.put(name, emote);
+			if (desc.getWalkstyle() == true)
+				playerWalks.put(name, emote);
 		}
 	}
 
 	public static void cancelEmote(AbstractClientPlayer player) {
 		String name = player.getName();
 		playerEmotes.remove(name);
+		playerWalks.remove(name);
 		resetPlayer(player);
 	}
 
@@ -114,8 +118,10 @@ public final class EmoteHandler {
 				EmoteBase emote = playerEmotes.get(name);
 				boolean done = emote.isDone();
 
-				if(!done)
-					emote.update(e);
+				if(!done) {
+					if (!playerWalks.containsKey(name) || e.getDistance(e.prevPosX, e.prevPosY, e.prevPosZ) > 0)
+						emote.update(e);
+				}
 			}
 		}
 	}
@@ -154,6 +160,7 @@ public final class EmoteHandler {
 				boolean done = emote.isDone();
 				if(done) {
 					playerEmotes.remove(name);
+					playerWalks.remove(name);
 				//	resetPlayer(player);
 
 					Minecraft mc = Minecraft.getMinecraft();
@@ -166,7 +173,8 @@ public final class EmoteHandler {
 								}
 							}
 				} else
-					emote.update((Entity) e);
+					if (!playerWalks.containsKey(name) || e.getDistance(e.prevPosX, e.prevPosY, e.prevPosZ) > 0)
+						emote.update((Entity) e);
 			} else resetPlayer(player);
 		}
 	}
