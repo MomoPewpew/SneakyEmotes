@@ -21,6 +21,8 @@ import vazkii.quark.base.command.CommandConfig;
 import vazkii.quark.base.module.GlobalConfig;
 import vazkii.quark.base.module.ModuleLoader;
 import vazkii.quark.base.network.MessageRegister;
+import vazkii.quark.vanity.feature.CancelEmoteCommand;
+import vazkii.quark.vanity.feature.EmoteCommand;
 
 public class CommonProxy {
 
@@ -48,6 +50,9 @@ public class CommonProxy {
 
 		if(GlobalConfig.enableConfigCommand)
 			event.registerServerCommand(new CommandConfig());
+
+		event.registerServerCommand(new EmoteCommand());
+		event.registerServerCommand(new CancelEmoteCommand());
 	}
 
 	public void doEmote(String playerName, String emoteName, int tier) {

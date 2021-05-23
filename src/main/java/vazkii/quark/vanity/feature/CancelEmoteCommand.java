@@ -2,7 +2,7 @@ package vazkii.quark.vanity.feature;
 
 import java.util.List;
 
-import vazkii.quark.base.network.message.MessageRequestCancelEmote;
+import vazkii.quark.base.network.message.MessageCancelEmote;
 import vazkii.arl.network.NetworkHandler;
 
 import com.google.common.collect.Lists;
@@ -17,9 +17,9 @@ public class CancelEmoteCommand extends CommandBase {
 	private final List<String> aliases = Lists.newArrayList("ce", "cancelemote");
 
 	@Override
-	public void execute(MinecraftServer arg0, ICommandSender arg1, String[] arg2)
+	public void execute(MinecraftServer server, ICommandSender sender, String[] args)
 			throws CommandException {
-		NetworkHandler.INSTANCE.sendToServer(new MessageRequestCancelEmote());
+		NetworkHandler.INSTANCE.sendToAll(new MessageCancelEmote(sender.getName()));
 		return;
 	}
 
