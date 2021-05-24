@@ -15,7 +15,7 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
-import vazkii.quark.base.SneakyEmotes;
+import vazkii.quark.base.Quark;
 import vazkii.quark.base.client.ContributorRewardHandler;
 import vazkii.quark.base.command.CommandConfig;
 import vazkii.quark.base.module.GlobalConfig;

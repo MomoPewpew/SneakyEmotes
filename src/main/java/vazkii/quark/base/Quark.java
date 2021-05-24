@@ -36,12 +36,12 @@ import java.rmi.registry.RegistryHandler;
 import java.util.Map;
 
 @Mod(modid = LibMisc.MOD_ID, name = LibMisc.MOD_NAME, version = LibMisc.VERSION, guiFactory = LibMisc.GUI_FACTORY, dependencies = LibMisc.DEPENDENCIES)
-public class SneakyEmotes {
+public class Quark {
 
-	public static final Logger LOG = LogManager.getLogger("SneakyEmotes");
+	public static final Logger LOG = LogManager.getLogger("Quark");
 
 	@Instance(LibMisc.MOD_ID)
-	public static SneakyEmotes instance;
+	public static Quark instance;
 
 	@SidedProxy(serverSide = LibMisc.PROXY_COMMON, clientSide = LibMisc.PROXY_CLIENT)
 	public static CommonProxy proxy;

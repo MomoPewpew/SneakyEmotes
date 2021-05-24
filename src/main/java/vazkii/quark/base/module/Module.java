@@ -21,7 +21,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import vazkii.quark.api.module.FeatureEvent;
 import vazkii.quark.api.module.IFeature;
 import vazkii.quark.api.module.IModule;
-import vazkii.quark.base.SneakyEmotes;
+import vazkii.quark.base.Quark;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -100,7 +100,7 @@ public class Module implements IModule {
 						}
 					
 					if(!failures.isEmpty())
-						SneakyEmotes.LOG.info("'" + feature.configName + "' is forcefully disabled as it's incompatible with the following loaded mods: " + failures);
+						Quark.LOG.info("'" + feature.configName + "' is forcefully disabled as it's incompatible with the following loaded mods: " + failures);
 				}
 			}
 			

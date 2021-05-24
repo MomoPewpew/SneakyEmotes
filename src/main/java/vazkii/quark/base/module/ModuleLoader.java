@@ -26,7 +26,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import vazkii.quark.api.module.ModuleLoadedEvent;
-import vazkii.quark.base.SneakyEmotes;
+import vazkii.quark.base.Quark;
 import vazkii.quark.base.lib.LibMisc;
 import vazkii.quark.vanity.QuarkVanity;
 
@@ -76,7 +76,7 @@ public final class ModuleLoader {
 
 		setupConfig(event);
 
-		forEachModule(module -> SneakyEmotes.LOG.info("Module " + module.name + " is " + (module.enabled ? "enabled" : "disabled")));
+		forEachModule(module -> Quark.LOG.info("Module " + module.name + " is " + (module.enabled ? "enabled" : "disabled")));
 
 		forEachEnabled(module -> module.preInit(event));
 		forEachEnabled(Module::postPreInit);

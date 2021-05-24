@@ -5,7 +5,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import vazkii.aurelienribon.tweenengine.Timeline;
-import vazkii.quark.base.SneakyEmotes;
+import vazkii.quark.base.Quark;
 import vazkii.quark.base.module.ModuleLoader;
 
 @SideOnly(Side.CLIENT)
@@ -15,7 +15,7 @@ public class TemplateSourcedEmote extends EmoteBase {
 		super(desc, player, model, armorModel, armorLegsModel);
 
 		if(shouldLoadTimelineOnLaunch()) {
-			SneakyEmotes.LOG.debug("Loading emote " + desc.getTranslationKey());
+			Quark.LOG.debug("Loading emote " + desc.getTranslationKey());
 			desc.template.readAndMakeTimeline(desc, player, model);
 		}
 	}

@@ -14,7 +14,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import vazkii.arl.network.NetworkMessage;
 import vazkii.arl.util.ClientTicker;
-import vazkii.quark.base.SneakyEmotes;
+import vazkii.quark.base.Quark;
 
 public class MessageDoEmote extends NetworkMessage<MessageDoEmote> {
 
@@ -32,7 +32,7 @@ public class MessageDoEmote extends NetworkMessage<MessageDoEmote> {
 
 	@Override
 	public IMessage handleMessage(MessageContext context) {
-		ClientTicker.addAction(() -> SneakyEmotes.proxy.doEmote(playerName, emoteName, playerTier));
+		ClientTicker.addAction(() -> Quark.proxy.doEmote(playerName, emoteName, playerTier));
 		
 		return null;
 	}
