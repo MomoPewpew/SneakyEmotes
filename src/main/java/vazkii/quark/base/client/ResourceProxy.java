@@ -2,7 +2,7 @@ package vazkii.quark.base.client;
 
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.client.resources.AbstractResourcePack;
-import vazkii.quark.base.Quark;
+import vazkii.quark.base.SneakyEmotes;
 import vazkii.quark.base.lib.LibMisc;
 
 import javax.annotation.Nonnull;
@@ -42,7 +42,7 @@ public class ResourceProxy extends AbstractResourcePack {
 	@Nonnull
 	@Override
 	protected InputStream getInputStreamByName(@Nonnull String name) {
-		return Quark.class.getResourceAsStream(overrides.get(name));
+		return SneakyEmotes.class.getResourceAsStream(overrides.get(name));
 	}
 
 	@Override

@@ -6,7 +6,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.config.Property;
-import vazkii.quark.base.Quark;
+import vazkii.quark.base.SneakyEmotes;
 import vazkii.quark.base.module.ModuleLoader;
 
 import java.io.IOException;
@@ -107,7 +107,7 @@ public class GuiConfigBase extends GuiScreen {
 			desktopClass.getMethod("browse", URI.class).invoke(object, url);
 		} catch(Throwable throwable1) {
 			Throwable throwable = throwable1.getCause();
-			Quark.LOG.warn("Couldn't open link: {}", (throwable == null ? "<UNKNOWN>" : throwable.getMessage()));
+			SneakyEmotes.LOG.warn("Couldn't open link: {}", (throwable == null ? "<UNKNOWN>" : throwable.getMessage()));
 		}
 	}
 

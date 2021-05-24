@@ -14,7 +14,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import vazkii.arl.network.NetworkMessage;
 import vazkii.arl.util.ClientTicker;
-import vazkii.quark.base.Quark;
+import vazkii.quark.base.SneakyEmotes;
 
 public class MessageCancelEmote extends NetworkMessage<MessageCancelEmote> {
 
@@ -28,7 +28,7 @@ public class MessageCancelEmote extends NetworkMessage<MessageCancelEmote> {
 
 	@Override
 	public IMessage handleMessage(MessageContext context) {
-		ClientTicker.addAction(() -> Quark.proxy.cancelEmote(playerName));
+		ClientTicker.addAction(() -> SneakyEmotes.proxy.cancelEmote(playerName));
 
 		return null;
 	}

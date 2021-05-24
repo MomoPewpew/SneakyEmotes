@@ -5,7 +5,7 @@ import net.minecraft.client.resources.AbstractResourcePack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import vazkii.quark.base.Quark;
+import vazkii.quark.base.SneakyEmotes;
 import vazkii.quark.vanity.feature.EmoteSystem;
 
 import javax.annotation.Nonnull;
@@ -40,7 +40,7 @@ public class CustomEmoteIconResourcePack extends AbstractResourcePack {
 	@Override
 	protected InputStream getInputStreamByName(@Nonnull String name) throws IOException {
 		if(name.equals("pack.mcmeta"))
-			return Quark.class.getResourceAsStream("/proxypack.mcmeta");
+			return SneakyEmotes.class.getResourceAsStream("/proxypack.mcmeta");
 		
 		File file = getFile(name);
 		if(!file.exists())
