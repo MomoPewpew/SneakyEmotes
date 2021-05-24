@@ -114,7 +114,7 @@ public class EmoteSystem extends Feature {
 				+ "To attach a function file to any given emote, simply place a .mcfunction file with the same name as your .emote file (sans extension) in /quark_emotes.\n"
 				+ "Command output from emote functions is enabled only if both \"Custom Emote Dev Mode\" and the \"commandBlockOutput\" gamerule are enabled. ", false);
 
-		emotesDir = new File(ModuleLoader.configFile.getParent(), "quark_emotes");
+		emotesDir = new File(ModuleLoader.configFile.getParent(), "SneakyEmotes");
 		if(!emotesDir.exists())
 			if (!emotesDir.mkdir())
 				customEmotes = new String[0];
