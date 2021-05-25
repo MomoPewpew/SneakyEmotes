@@ -15,3 +15,4 @@ List of additions:
 * Added /ce or /cancelemote command that cancels emotes
 * Reworked the emote GUI
 * Added a "walkstyle" command to the quark emote language. A walkstyle emote will only animate when you are moving.
+* Added a "say" command to the quark emote language. Say forces the player to say something, and can also force them to do chat commands

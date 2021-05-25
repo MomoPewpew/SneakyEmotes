@@ -47,8 +47,8 @@ public abstract class EmoteBase {
 
 	public void startAllTimelines() {
 		startTimeline(player, model);
-		startTimeline(player, armorModel);
-		startTimeline(player, armorLegsModel);
+		//startTimeline(player, armorModel);
+		//startTimeline(player, armorLegsModel);
 		lastMs = System.currentTimeMillis();
 	}
 

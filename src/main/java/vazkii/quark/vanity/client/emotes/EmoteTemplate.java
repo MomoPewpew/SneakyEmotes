@@ -39,6 +39,7 @@ public class EmoteTemplate {
 		functions.put("repeat", (em, model, player, timeline, tokens) -> repeat(em, timeline, tokens));
 		functions.put("tier", (em, model, player, timeline, tokens) -> tier(em, timeline, tokens));
 		functions.put("sound", (em, model, player, timeline, tokens) -> sound(em, player, timeline, tokens));
+		functions.put("say", (em, model, player, timeline, tokens) -> say(em, player, timeline, tokens));
 		functions.put("walkstyle", (em, model, player, timeline, tokens) -> walkstyle(em, timeline, tokens));
 
 		Class<?> clazz = ModelAccessor.class;
@@ -439,6 +440,28 @@ public class EmoteTemplate {
 			timeline.addCallback(TweenCallback.COMPLETE,
 					(tween) -> EmoteSound.endSection(sounds));
 		}
+
+		return timeline;
+	}
+
+	private static Timeline say(EmoteTemplate em, EntityPlayer player, Timeline timeline, String[] tokens) throws IllegalArgumentException {
+		if (timeline == null)
+			throw new IllegalArgumentException("Illegal use of function say, animation not started");
+		if (tokens.length < 1)
+			throw new IllegalArgumentException("Expected string for function say");
+
+		String message = (String.join(" ", tokens)).substring(4);
+
+		List<BaseTween<?>> children = timeline.getChildren();
+		BaseTween<?> callbackTween = timeline;
+		int tweenEvent = TweenCallback.START;
+		if (!children.isEmpty()) {
+			tweenEvent = TweenCallback.COMPLETE;
+			callbackTween = children.get(children.size() - 1);
+		}
+
+		callbackTween.addCallback(tweenEvent,
+				(tween) -> EmoteSay.add(message, em, player));
 
 		return timeline;
 	}
